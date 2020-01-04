@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    padding: 0.5rem;
+    background-color: white;
+}
+
+.containerBottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+input {
+    padding: 0.4rem;
+    margin-bottom: 1rem;
+}
