@@ -23,3 +23,5 @@ yarn-error.log*
 
 certs/
 node_modules/
+
+/server/src/database/config.js

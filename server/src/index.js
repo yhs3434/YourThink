@@ -8,8 +8,6 @@ const Router = require('koa-router');
 const app = new koa();
 const router = new Router();
 
-const api = require('./api');
-
 
 // config
 
@@ -46,9 +44,9 @@ app.use(async (ctx, next) => {
 
 // 라우트 하위 경로 설정
 
+const api = require('./routes/api.js');
+
 router.use('/api', api.routes());
-
-
 
 // router set
 

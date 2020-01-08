@@ -10,6 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "koa": "^2.11.0",
-    "koa-router": "^7.4.0"
+    "koa-mysql": "^1.0.3",
+    "koa-router": "^7.4.0",
+    "mysql": "^2.17.1",
+    "sync-mysql": "^3.0.1"
   }
 }
