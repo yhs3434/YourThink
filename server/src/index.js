@@ -4,6 +4,7 @@ const http = require('http');
 const https = require('https');
 const koa = require('koa');
 const Router = require('koa-router');
+const bodyParser = require('koa-bodyparser')
 
 const app = new koa();
 const router = new Router();
@@ -25,6 +26,10 @@ const config = {
     },
   };
 
+// router set
+
+app.use(bodyParser()).use(router.routes()).use(router.allowedMethods());
+
 // logger
 
 app.use(async (ctx, next) => {
@@ -45,13 +50,13 @@ app.use(async (ctx, next) => {
 // 라우트 하위 경로 설정
 
 const api = require('./routes/api.js');
+const useraccount = require('./routes/useraccount.js');
 
 router.use('/api', api.routes());
+router.use('/useraccount', useraccount.routes());
 
-// router set
 
-app.use(router.routes()).use(router.allowedMethods());
-
+// server listen
 
 http.createServer(app.callback()).listen(config.http.port);
 https.createServer(config.https.options, app.callback()).listen(config.https.port);
