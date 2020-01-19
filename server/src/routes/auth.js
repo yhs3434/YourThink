@@ -15,6 +15,7 @@ function toSessionKey(userId, password, salt) {
 }
 
 auth.post('/signup', async (ctx, next) => {
+    console.log(ctx.request.body);
     const {uname, pwd, pwd_chk, email} = ctx.request.body;
     if (pwd != pwd_chk || pwd == undefined || pwd.length<10) {
         ctx.response.status = 400;
@@ -50,22 +51,23 @@ auth.post('/login', async (ctx, next) => {
             row = rows[0];
             uid = row['id']
             try {
+                await conn.query('START TRANSACTION;');
                 let dRows = await conn.query(`SELECT * FROM auth WHERE uname = '${uname}'`);
-                console.log(dRows.length);
                 if (dRows.length > 0) {
                     dRows = await conn.query(`DELETE FROM auth WHERE uname = '${uname}'`);
                 }
-                const challenge = Math.floor(Math.random()*64);
-                const sessionKey = toSessionKey(uid, pwd_hash, challenge);
-                const rows = await conn.query(`INSERT INTO auth VALUES ('${sessionKey}', '${uname}', '${challenge}');`);
-                
+                const salt = Math.floor(Math.random()*64);
+                const accessToken = toSessionKey(uid, pwd_hash, salt);
+                const rows = await conn.query(`INSERT INTO auth VALUES ('${accessToken}', '${uname}', '${salt}', date_add(current_timestamp, interval 2 week));`);
+                await conn.query('COMMIT;');
                 ctx.response.status = 200;
                 ctx.response.body = {
                     logged: true,
-                    sessionKey: sessionKey
+                    accessToken
                 };
-                ctx.cookies.set('access_token', sessionKey, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+                ctx.cookies.set('accessToken', accessToken, { httpOnly: false, maxAge: 1000 * 60 * 60 * 24 * 7 });
             } catch (err) {
+                conn.query('ROLLBACK;');
                 ctx.response.status = 400;
                 ctx.response.body = {
                     logged: false

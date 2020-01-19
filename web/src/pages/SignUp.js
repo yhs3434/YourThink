@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {withRouter} from 'react-router-dom';
 
-export default class SignUp extends Component {
+class SignUp extends Component {
     state = {
         uname: '',
         pwd: '',
@@ -10,16 +11,34 @@ export default class SignUp extends Component {
         email_chk: ''
     }
 
+    replaceBack = () => {
+        let { from } = this.props.location.state || {from: {pathname: "/login"}};
+        this.props.history.replace(from);
+    }
+
+    replaceCur = () => {
+        window.location.href = "/signup"
+    }
+
     handleSubmit = async (event) => {
         const {uname, pwd, pwd_chk, email} = this.state;
         const data = {
             uname, pwd, pwd_chk, email
         };
         event.preventDefault();
-        console.log(data)
-        const ret = await axios.post('http://localhost:3001/useraccont/signup', {param: data});
-        console.log(ret);
-        
+        try {
+            const ret = await axios.post(`${process.env.REACT_APP_HTTP_SERVER_URI}/auth/signup`, data);
+            if (ret.data.signed == true) {
+                this.replaceBack();
+            } else {
+                alert('회원가입 실패');
+                this.replaceCur();
+            }
+        } catch(err) {
+            alert('회원가입 실패');
+            this.replaceCur();
+        }
+
     }
 
     handleChange = (event) => {
@@ -55,3 +74,5 @@ export default class SignUp extends Component {
         )
     }
 }
+
+export default withRouter(SignUp);

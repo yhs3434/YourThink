@@ -12,8 +12,10 @@
   "dependencies": {
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
+    "koa-cors": "0.0.16",
     "koa-mysql": "^1.0.3",
     "koa-router": "^7.4.0",
+    "koa2-cors": "^2.0.6",
     "mysql": "^2.17.1",
     "sync-mysql": "^3.0.1"
   }

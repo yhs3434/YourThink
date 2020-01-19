@@ -19,3 +19,10 @@
     transform: rotate(360deg);
   }
 }
+
+.mainHeader {
+  display: flex;
+  background-color: white;
+  padding: 1.5rem;
+  width: 100%;
+}

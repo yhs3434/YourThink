@@ -7,6 +7,7 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session');
 const dotenv = require('dotenv');
+const cors = require('koa2-cors');
 
 const app = new koa();
 const router = new Router();
@@ -45,12 +46,13 @@ const SESSION_CONFIG = {
   renew: false, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
 };
 
-// router set
+// cors set
+app.use(cors());
 
+// router set
 app.use(bodyParser()).use(router.routes()).use(router.allowedMethods());
 
 // logger
-
 app.use(async (ctx, next) => {
     await next();
     const rt = ctx.response.get('X-Response-Time');
@@ -67,6 +69,15 @@ app.use(async (ctx, next) => {
 });
 
 // session
+
+app.use(async (ctx, next) => {
+  if (ctx.cookies.get('accessToken')) {
+    console.log(ctx.cookies.get('accessToken'));
+  } else {
+    console.log('please login');
+  }
+  await next();
+});
 
 /* app.use(session(SESSION_CONFIG, app)); */
 
