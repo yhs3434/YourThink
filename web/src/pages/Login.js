@@ -9,6 +9,24 @@ class Login extends Component {
         pwd : ""
     }
 
+    setCookie = (name, value, expires) => {
+        var time = new Date();
+        expires = expires ? time.setDate(time.getDate() + expires) : '';
+        document.cookie=name+'='+escape(value)+(expires?'; expires='+time.toGMTString():'');
+    }
+
+    getCookie = (c_name) => {
+        var i,x,y,ARRcookies=document.cookie.split(";");
+        for (i=0;i<ARRcookies.length;i++){
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==c_name){
+                return unescape(y);
+            }
+        }
+    }
+
     replaceBack = () => {
         let { from } = this.props.location.state || {from: {pathname: "/"}};
         this.props.history.replace(from);
@@ -34,6 +52,7 @@ class Login extends Component {
             const ret = await axios.post(`${process.env.REACT_APP_HTTP_SERVER_URI}/auth/login`, data);
             console.log('ret', ret.data)
             if (ret.data.logged == true) {
+                this.setCookie('accessToken', ret.data.accessToken, 14*24*60*60*1000);
                 this.replaceBack();
             } else {
                 alert("로그인 실패");

@@ -1,0 +1,11 @@
+.writeDiaryWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.writeDiaryTextArea {
+    width: 80%;
+    margin: 2rem;
+}

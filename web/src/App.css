@@ -23,6 +23,6 @@
 .mainHeader {
   display: flex;
   background-color: white;
-  padding: 1.5rem;
   width: 100%;
+  height: 60px;
 }

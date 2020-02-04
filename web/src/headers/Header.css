@@ -1,0 +1,29 @@
+.headerWrap {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.headerLeft {
+    flex: 1 1 auto;
+    width: 30%;
+}
+
+.headerMid {
+    display: flex;
+    flex: 10 10 auto;
+    width: 40%;
+    justify-content: center;
+}
+
+.headerRight {
+    display: flex;
+    flex: 1 1 auto;
+    width: 30%;
+    justify-content: flex-end;
+}
