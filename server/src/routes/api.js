@@ -6,7 +6,8 @@ let conn = new mysql(dbconfig);
 const api = new Router();
 
 api.get('/hello', async (ctx, next) => {
-    ctx.response.body = 'hello!!';
+    const token = ctx.cookies.get('accessToken');
+    ctx.response.body = token;
     await next();
 });
 

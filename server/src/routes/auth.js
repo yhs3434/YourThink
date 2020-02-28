@@ -65,7 +65,7 @@ auth.post('/login', async (ctx, next) => {
                     logged: true,
                     accessToken
                 };
-                ctx.cookies.set('accessToken', accessToken, { httpOnly: false, maxAge: 1000 * 60 * 60 * 24 * 7 });
+                ctx.cookies.set('accessToken', accessToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 14 });
             } catch (err) {
                 conn.query('ROLLBACK;');
                 ctx.response.status = 400;

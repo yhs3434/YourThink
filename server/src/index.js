@@ -85,9 +85,11 @@ app.use(async (ctx, next) => {
 
 const api = require('./routes/api.js');
 const auth = require('./routes/auth.js');
+const memo = require('./routes/memo.js');
 
 router.use('/api', api.routes());
 router.use('/auth', auth.routes());
+router.use('/memo', memo.routes());
 
 
 // server listen
