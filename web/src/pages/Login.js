@@ -72,7 +72,7 @@ class Login extends Component {
     render() {
         return (
             <div>
-                <form onSubmit={this.handleSubmit} method="post">
+                <form onSubmit={/*this.handleSubmit*/ console.log('test')} method="post">
                     <div className="container">
                         <label htmlFor="uname">아이디</label>
                         <input type="text" placeholder="Enter Username" name="uname" onChange={this.handleChange} required />

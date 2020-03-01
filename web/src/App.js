@@ -38,7 +38,9 @@ function App() {
       <div className="App">
         <button onClick={logIn}>login</button>
         <button onClick={logOut}>logout</button>
-        <button onClick={sayHello}>send hello</button>
+        {
+          // <button onClick={sayHello}>send hello</button>
+        }
         <header className="mainHeader">
           <Header logged={logged}/>
         </header>
