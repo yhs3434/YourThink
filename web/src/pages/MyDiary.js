@@ -1,36 +1,25 @@
 import React, {Component} from 'react';
 import './css/MyDiary.css';
+import {openDB} from '../lib/indexeddb';
 
 class MyDiary extends Component {
     state = {
         memos: [],
-        DATABASE: 'OthersThink',
-        DB_VERSION: 1,
-        DB_STORE_NAME: 'memo',
-        db: undefined
+        db: undefined,
+        DB_NAME: undefined,
+        DB_VERSION: undefined,
+        DB_STORE_NAME: undefined
     }
 
-    componentDidMount() {
-        this.openDB();
-    }
-
-    openDB = () => {
-        let req = indexedDB.open(this.state.DATABASE, this.state.DB_VERSION);
-        req.onsuccess = (evt) => {
-            this.setState({
-                db: evt.target.result
-            })
-            this.getAllData();
-        };
-        req.onerror = (evt) => {
-            console.error("indexedDB : ", evt.target.errorCode);
-        };
-        req.onupgradeneeded = (evt) => {
-            let store = evt.currentTarget.result.createObjectStore(this.state.DB_STORE_NAME,
-                {keyPath: 'id', autoIncrement: true});
-            store.createIndex('memoTitle', 'memoTitle', {unique: false});
-            store.createIndex('memoContent', 'memoContent', {unique: false});
-        }
+    async componentDidMount() {
+        const ret = await openDB();
+        this.setState({
+            db: ret,
+            DB_NAME: ret.name,
+            DB_VERSION: ret.version,
+            DB_STORE_NAME: ret.objectStoreNames[0]
+        });
+        this.getAllData();
     }
 
     getObjectStore = (store_name, mode) => {
@@ -64,11 +53,14 @@ class MyDiary extends Component {
         return(
             <div className="myDiaryWrap">
                 This is My Diary page.
+                {
+                    console.log(this.state)
+                }
                 <ol>
                     {
                         this.state.memos.map((memo, i) => {
                             return(
-                                <li>{memo.memoTitle}</li>
+                                <li>{memo.id} {memo.memoTitle}</li>
                             )
                         })
                     }
