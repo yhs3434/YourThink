@@ -21,7 +21,6 @@ class WriteDiary extends Component {
             this.setState({
                 db: evt.target.result
             })
-            this.getAllData();
         };
         req.onerror = (evt) => {
             console.error("indexedDB : ", evt.target.errorCode);
@@ -31,6 +30,7 @@ class WriteDiary extends Component {
                 {keyPath: 'id', autoIncrement: true});
             store.createIndex('memoTitle', 'memoTitle', {unique: false});
             store.createIndex('memoContent', 'memoContent', {unique: false});
+            //store.createIndex('published', 'published', {unique: false});
         }
     }
 
@@ -52,7 +52,7 @@ class WriteDiary extends Component {
                 req = store.get(cursor.key);
                 req.onsuccess = function (evt) {
                     const value = evt.target.result;
-                    console.log(value)
+                    console.log(value);
                 }
                 cursor.continue();
             }
@@ -74,7 +74,6 @@ class WriteDiary extends Component {
         console.log(obj);
         let store = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
         let req;
-        console.log(store)
         try {
             req = store.add(obj);
             
