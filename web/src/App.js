@@ -64,11 +64,14 @@ function App() {
           <Route path = "/other">
             <OtherDiary />
           </Route>
-          <Route path = "/detail/:id" component={DetailDiary}/>
+          <Route name="detailPage" path = "/detail/:id" component={DetailDiary}/>
           <Route exact path = "/">
             <Home/>
           </Route>
         </Switch>
+        <footer>
+          this is footer
+        </footer>
       </div>
     </Router>
   );

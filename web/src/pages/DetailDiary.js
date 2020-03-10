@@ -48,11 +48,31 @@ class DetailDiary extends Component {
     }
 
     render() {
+        const style = {
+            wrap: {
+                display: 'flex',
+                flexDirection: 'column',
+                width: '80%',
+                alignItems: 'center'
+            },
+            titleWrap: {
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center'
+            },
+            contentWrap: {
+                whiteSpace: 'pre-wrap'
+            },
+            title: {
+                alignSelf: 'center',
+                fontSize: 20
+            }
+        }
         return (
-            <div>
-                <p>{this.state.memoTitle}</p>
-                <p>{this.state.memoContent}</p>
-                <p>{this.state.published}</p>
+            <div style={style.wrap}>
+                <pre><span style={style.title}>{this.state.memoTitle}</span></pre>
+                <pre style={style.contentWrap}>{this.state.memoContent}</pre>
+                <pre>{this.state.published}</pre>
             </div>
         )
     }

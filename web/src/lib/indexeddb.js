@@ -12,7 +12,7 @@ export function openDB() {
             reject();
         };
         req.onupgradeneeded = (evt) => {
-            let store = evt.currentTarget.result.createObjectStore(this.state.DB_STORE_NAME,
+            let store = evt.currentTarget.result.createObjectStore(memoConfig.DB_STORE_NAME,
                 {keyPath: 'id', autoIncrement: true});
             store.createIndex('memoTitle', 'memoTitle', {unique: false});
             store.createIndex('memoContent', 'memoContent', {unique: false});

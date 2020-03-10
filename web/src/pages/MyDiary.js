@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './css/MyDiary.css';
 import {openDB} from '../lib/indexeddb';
+import {Link} from "react-router-dom";
 
 class MyDiary extends Component {
     state = {
@@ -52,19 +53,22 @@ class MyDiary extends Component {
     render() {
         return(
             <div className="myDiaryWrap">
-                This is My Diary page.
                 {
                     console.log(this.state)
                 }
-                <ol>
+                <ul>
                     {
                         this.state.memos.map((memo, i) => {
                             return(
-                                <li>{memo.id} {memo.memoTitle}</li>
+                                <li>
+                                    <Link to={`/detail/${memo.id}`} params={{id: memo.id}}>
+                                        {memo.memoTitle} {memo.published}
+                                    </Link>
+                                </li>
                             )
                         })
                     }
-                </ol>
+                </ul>
             </div>
         )
     }
