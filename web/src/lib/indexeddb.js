@@ -16,7 +16,7 @@ export function openDB() {
                 {keyPath: 'id', autoIncrement: true});
             store.createIndex('memoTitle', 'memoTitle', {unique: false});
             store.createIndex('memoContent', 'memoContent', {unique: false});
-            //store.createIndex('published', 'published', {unique: false});
+            store.createIndex('published', 'published', {unique: false});
         }
     })
 };

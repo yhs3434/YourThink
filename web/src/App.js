@@ -7,6 +7,7 @@ import Header from './headers/Header';
 import WriteDiary from './pages/WriteDiary';
 import MyDiary from './pages/MyDiary';
 import OtherDiary from './pages/OtherDiary';
+import DetailDiary from './pages/DetailDiary';
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 
 import axios from 'axios';
@@ -63,6 +64,7 @@ function App() {
           <Route path = "/other">
             <OtherDiary />
           </Route>
+          <Route path = "/detail/:id" component={DetailDiary}/>
           <Route exact path = "/">
             <Home/>
           </Route>

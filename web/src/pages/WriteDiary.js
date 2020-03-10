@@ -40,7 +40,8 @@ class WriteDiary extends Component {
         event.preventDefault();
         const obj = {
             memoTitle: this.state.memoTitle,
-            memoContent: this.state.memoContent
+            memoContent: this.state.memoContent,
+            published: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
         let store = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
         let req;
