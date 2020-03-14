@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import {openDB} from '../lib/indexeddb';
+import {withRouter} from 'react-router-dom';
 
 class DetailDiary extends Component {
     state = {
         memoTitle: undefined,
         memoContent: undefined,
         published: undefined,
+        
+        memoId: undefined,
 
         db: undefined,
         DB_NAME: undefined,
@@ -15,6 +18,9 @@ class DetailDiary extends Component {
 
     async componentDidMount() {
         const id = Number(this.props.match.params.id);
+        this.setState({
+            memoId: id
+        });
         
         const ret = await openDB();
         this.setState({
@@ -32,11 +38,40 @@ class DetailDiary extends Component {
         request.onsuccess = (event) => {
             console.log('가져오기 성공');
             //console.log(request.result);
-            this.setState({
-                memoTitle: request.result.memoTitle,
-                memoContent: request.result.memoContent,
-                published: request.result.published
-            });
+            if (Boolean(request.result)) {
+                this.setState({
+                    memoTitle: request.result.memoTitle,
+                    memoContent: request.result.memoContent,
+                    published: request.result.published
+                });
+            }
+        }
+    }
+
+    deleteButtonClicked = (event) => {
+        const result = window.confirm("정말 삭제 하시겠습니까?");
+        
+        if (Boolean(this.state.memoTitle) && result) {
+            let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
+            let request = objectStore.delete(this.state.memoId);
+            request.onsuccess = function(event) {
+                console.log('delete success');
+            };
+            request.onerror = function(event) {
+                console.log('delete fail');
+            };
+        } else {
+            console.log('not delete');
+        }
+    }
+
+    modifyButtonClicked = (event) => {
+        const result = window.confirm("수정 하시겠습니까?");
+        
+        if (Boolean(this.state.memoTitle) && result) {
+            this.props.history.replace(`/modify/${this.state.memoId}`);
+        } else {
+            console.log('not modify');
         }
     }
 
@@ -73,9 +108,14 @@ class DetailDiary extends Component {
                 <pre><span style={style.title}>{this.state.memoTitle}</span></pre>
                 <pre style={style.contentWrap}>{this.state.memoContent}</pre>
                 <pre>{this.state.published}</pre>
+                <div>
+                    <button>공개</button>
+                    <button onClick={this.modifyButtonClicked}>수정</button>
+                    <button onClick={this.deleteButtonClicked}>삭제</button>
+                </div>
             </div>
         )
     }
 }
 
-export default DetailDiary;
+export default withRouter(DetailDiary);

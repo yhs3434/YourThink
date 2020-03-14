@@ -1,19 +1,26 @@
 import React, {Component} from 'react';
-import './css/WriteDiary.css';
 import {openDB} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 
-class WriteDiary extends Component {
+class ModifyDiary extends Component {
     state = {
         memoTitle: '',
         memoContent: '',
+
+        memoId: undefined,
+
         db: undefined,
         DB_NAME: undefined,
         DB_VERSION: undefined,
         DB_STORE_NAME: undefined
     }
-    
+
     async componentDidMount() {
+        const id = Number(this.props.match.params.id);
+        this.setState({
+            memoId: id
+        });
+        
         const ret = await openDB();
         this.setState({
             db: ret,
@@ -21,9 +28,25 @@ class WriteDiary extends Component {
             DB_VERSION: ret.version,
             DB_STORE_NAME: ret.objectStoreNames[0]
         });
+
+        let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readonly');
+        let request = objectStore.get(id);
+        request.onerror = (event) => {
+            console.log('가져오기 실패');
+        }
+        request.onsuccess = (event) => {
+            console.log('가져오기 성공');
+            //console.log(request.result);
+            if (Boolean(request.result)) {
+                this.setState({
+                    memoTitle: request.result.memoTitle,
+                    memoContent: request.result.memoContent,
+                    published: request.result.published
+                });
+            }
+        }
     }
 
-    // store 반환
     getObjectStore = (store_name, mode) => {
         if (Boolean(this.state.db)) {
             let db = this.state.db;
@@ -33,7 +56,7 @@ class WriteDiary extends Component {
 
     handleChange = (event) => {
         this.setState({
-            [event.currentTarget.name] : event.currentTarget.value
+            [event.currentTarget.name]: event.currentTarget.value
         });
     }
 
@@ -43,19 +66,25 @@ class WriteDiary extends Component {
         const obj = {
             memoTitle: this.state.memoTitle,
             memoContent: this.state.memoContent,
-            published: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            published: this.state.published
         };
-        let store = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
-        let req;
-        try {
-            req = store.add(obj);
-            
-        } catch (e) {}
-        req.onsuccess = (evt) => {
-            superthis.props.history.replace('/my');
-            console.log('입력 완료');
+        let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
+        let request = objectStore.get(this.state.memoId);
+        request.onsuccess = (event) => {
+            let data = event.target.result;
+            data.memoTitle = this.state.memoTitle;
+            data.memoContent = this.state.memoContent;
+
+            let requestUpdate = objectStore.put(data);
+            requestUpdate.onerror = function(event) {
+                console.log('수정 실패');
+            }
+            requestUpdate.onsuccess = function(event) {
+                console.log('수정 완료');
+                superthis.props.history.replace('/my');
+            }
         }
-        req.onerror = () => {
+        request.onerror = (event) => {
             console.error(this.error);
         }
         
@@ -64,7 +93,6 @@ class WriteDiary extends Component {
     render() {
         return(
             <form className="writeDiaryWrap" onSubmit={this.handleSubmit}>
-                This is Write Diary page.
                 <input
                     className="writeDiaryTitle"
                     name="memoTitle"
@@ -79,6 +107,7 @@ class WriteDiary extends Component {
                     rows = "40"
                     onChange = {this.handleChange}
                     value = {this.state.memoContent}
+                    placeholder="내용"
                 />
                 <button type='submit'>완료</button>
             </form>
@@ -86,4 +115,4 @@ class WriteDiary extends Component {
     }
 }
 
-export default withRouter(WriteDiary);
+export default withRouter(ModifyDiary);
