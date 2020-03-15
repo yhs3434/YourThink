@@ -50,11 +50,12 @@ class DetailDiary extends Component {
 
     deleteButtonClicked = (event) => {
         const result = window.confirm("정말 삭제 하시겠습니까?");
-        
+        const superthis = this;
         if (Boolean(this.state.memoTitle) && result) {
             let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
             let request = objectStore.delete(this.state.memoId);
             request.onsuccess = function(event) {
+                superthis.props.history.replace('/my');
                 console.log('delete success');
             };
             request.onerror = function(event) {
@@ -72,6 +73,16 @@ class DetailDiary extends Component {
             this.props.history.replace(`/modify/${this.state.memoId}`);
         } else {
             console.log('not modify');
+        }
+    }
+
+    saveButtonClicked = (event) => {
+        const result = window.confirm("저장 하시겠습니까?");
+
+        if (Boolean(this.state.memoTitle) && result) {
+            alert('준비중입니다');
+        } else {
+            console.log('not save');
         }
     }
 
@@ -109,7 +120,7 @@ class DetailDiary extends Component {
                 <pre style={style.contentWrap}>{this.state.memoContent}</pre>
                 <pre>{this.state.published}</pre>
                 <div>
-                    <button>공개</button>
+                    <button onClick={this.saveButtonClicked}>저장</button>
                     <button onClick={this.modifyButtonClicked}>수정</button>
                     <button onClick={this.deleteButtonClicked}>삭제</button>
                 </div>
