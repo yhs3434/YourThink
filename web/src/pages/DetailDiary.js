@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {openDB} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
+import Oauth from '../components/oauth.js';
 
 class DetailDiary extends Component {
     state = {
@@ -13,7 +14,9 @@ class DetailDiary extends Component {
         db: undefined,
         DB_NAME: undefined,
         DB_VERSION: undefined,
-        DB_STORE_NAME: undefined
+        DB_STORE_NAME: undefined,
+
+        modalOauth: false,
     }
 
     async componentDidMount() {
@@ -46,6 +49,18 @@ class DetailDiary extends Component {
                 });
             }
         }
+    }
+
+    modalOpen = (event) => {
+        this.setState({
+            modalOauth: true
+        });
+    }
+
+    modalClose = (event) => {
+        this.setState({
+            modalOauth: false
+        });
     }
 
     deleteButtonClicked = (event) => {
@@ -81,8 +96,51 @@ class DetailDiary extends Component {
 
         if (Boolean(this.state.memoTitle) && result) {
             alert('준비중입니다');
+            const id = Number(this.props.match.params.id);
+            let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readonly');
+            let request = objectStore.get(id);
+            request.onsuccess = (event) => {
+                const {memoTitle, memoContent, published} = request.result;
+                const memoId = `sampleId_${published}`;
+                const obj = {
+                    memoId, memoTitle, memoContent, published
+                };
+                console.log('reqObj', obj);
+                const message = {
+                    type: 'save',
+                    payload: obj
+                };
+                // 임시 주소
+                const ws = new WebSocket('ws://localhost:8080/');
+                ws.onopen = (event) => {
+                    ws.send(escape(JSON.stringify(message)));
+                }
+                ws.onmessage = (event) => {
+                    const {data} = event;
+                    switch (data) {
+                        case "success":
+                            ws.close();
+                            break;
+                        case "fail":
+                            ws.close();
+                            break;
+                    }
+                    
+                }
+                ws.onclose = (event) => {
+                    console.log('closed');
+                }
+            }
         } else {
             console.log('not save');
+        }
+    }
+
+    testButtonClicked = (event) => {
+        if (this.state.modalOauth) {
+            this.modalClose();
+        } else {
+            this.modalOpen();
         }
     }
 
@@ -115,14 +173,24 @@ class DetailDiary extends Component {
             }
         }
         return (
-            <div style={style.wrap}>
-                <pre><span style={style.title}>{this.state.memoTitle}</span></pre>
-                <pre style={style.contentWrap}>{this.state.memoContent}</pre>
-                <pre>{this.state.published}</pre>
-                <div>
-                    <button onClick={this.saveButtonClicked}>저장</button>
-                    <button onClick={this.modifyButtonClicked}>수정</button>
-                    <button onClick={this.deleteButtonClicked}>삭제</button>
+            <div>
+                <div style={style.wrap}>
+                    <pre><span style={style.title}>{this.state.memoTitle}</span></pre>
+                    <pre style={style.contentWrap}>{this.state.memoContent}</pre>
+                    <pre>{this.state.published}</pre>
+                    <div>
+                        <button onClick={this.saveButtonClicked}>저장</button>
+                        <button onClick={this.modifyButtonClicked}>수정</button>
+                        <button onClick={this.deleteButtonClicked}>삭제</button>
+                        <button onClick={this.testButtonClicked}>테스트</button>
+                    </div>
+                    
+                </div>
+                <div className={this.state.modalOauth
+                    ?"modal_component_visible"
+                    :"modal_component_hide"
+                }>
+                    <Oauth/>
                 </div>
             </div>
         )

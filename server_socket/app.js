@@ -30,14 +30,26 @@ const wss = new WebSocket.Server({
 });
 
 wss.on('connection', function connection(ws, req) {
-    console.log(req.connection.remoteAddress);
     ws.on('message', function incoming(res) {
-        const {type, data} = JSON.parse(res);
+        const {type, payload} = JSON.parse(unescape(res));
         switch (type) {
             case 'init':
                 break;
 
             case 'save':
+                //console.log(type, payload);
+                const {memoId, memoTitle, memoContent, published} = payload;
+                const query = `
+                INSERT INTO memo SET memoId = ?, memoTitle = ?, memoContent = ?, published = ?
+                `
+                conn.query(query, [memoId, memoTitle, memoContent, published],(err, rows, fields) => {
+                    if (!err) {
+                        ws.send('success');
+                    } else {
+                        console.error(err);
+                        ws.send('fail');
+                    }
+                })
                 break;
 
             case 'test':

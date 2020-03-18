@@ -9,13 +9,14 @@ import MyDiary from './pages/MyDiary';
 import OtherDiary from './pages/OtherDiary';
 import DetailDiary from './pages/DetailDiary';
 import ModifyDiary from './pages/ModifyDiary';
+import OauthCallback from './components/oauthCallback';
 
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 
 import axios from 'axios';
 
 function App() {
-  const [logged, setLogged] = useState(false);
+  const [logged, setLogged] = useState(true);
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
     // indexedDB 가 지원하지 않는 경우
@@ -68,6 +69,7 @@ function App() {
           </Route>
           <Route name="detailPage" path = "/detail/:id" component={DetailDiary}/>
           <Route path="/modify/:id" component={ModifyDiary}/>
+          <Route path="/oauth" component={OauthCallback}/>
           <Route exact path = "/">
             <Home/>
           </Route>
