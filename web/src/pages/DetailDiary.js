@@ -190,7 +190,10 @@ class DetailDiary extends Component {
                     ?"modal_component_visible"
                     :"modal_component_hide"
                 }>
-                    <Oauth/>
+                    <Oauth 
+                    modalOpen={this.modalOpen}
+                    modalClose={this.modalClose}
+                    />
                 </div>
             </div>
         )

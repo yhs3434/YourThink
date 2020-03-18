@@ -7,7 +7,7 @@ class Oauth extends Component {
             {
                 clientId: process.env.REACT_APP_NAVER_CLIENT_ID,
                 callbackUrl: process.env.REACT_APP_NAVER_CALLBACK_URL,
-                isPopup: true,
+                isPopup: false,
                 loginButton: {color: "green", type: 3, height: 50} /* 로그인 버튼의 타입을 지정 */
             }
         );
@@ -24,6 +24,10 @@ class Oauth extends Component {
         console.log('kakao');
     }
 
+    closedButtonClicked = (event) => {
+        this.props.modalClose();
+    }
+
     render() {
         const style = {
             iconGap: {
@@ -38,9 +42,6 @@ class Oauth extends Component {
         }
         return (
             <div>
-                <div>
-                    <button style={style.closeButton}>X</button>
-                </div>
                 <div className='col_flex'>
                     <div onClick={this.kakaoClicked}>
                         <img
@@ -57,6 +58,7 @@ class Oauth extends Component {
                         width='200px'
                         />
                     </div>
+                    <button onClick={this.closedButtonClicked}>닫기</button>
                 </div>
             </div>
         )

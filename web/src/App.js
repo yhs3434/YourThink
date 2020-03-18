@@ -18,12 +18,17 @@ import axios from 'axios';
 function App() {
   const [logged, setLogged] = useState(true);
   const [accessToken, setAccessToken] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   useEffect(() => {
     // indexedDB 가 지원하지 않는 경우
     if (!window.indexedDB) {
       window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
     }
   })
+
+  const naverEmail = (email) => {
+    setUserEmail(email);
+  }
 
   const logIn = () => {
     setLogged(true);
@@ -49,6 +54,7 @@ function App() {
           <Header logged={logged}/>
         </header>
         <nav>
+          <p>{userEmail}</p>
           <p>Hello World! This is someone's thinking application!</p>
         </nav>
         <Switch>
@@ -69,7 +75,9 @@ function App() {
           </Route>
           <Route name="detailPage" path = "/detail/:id" component={DetailDiary}/>
           <Route path="/modify/:id" component={ModifyDiary}/>
-          <Route path="/oauth" component={OauthCallback}/>
+          <Route path="/oauth">
+            <OauthCallback naverEmail={naverEmail}/>
+          </Route>
           <Route exact path = "/">
             <Home/>
           </Route>
