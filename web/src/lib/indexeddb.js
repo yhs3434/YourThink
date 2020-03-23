@@ -20,3 +20,7 @@ export function openDB() {
         }
     })
 };
+
+export function getObjectStore(db, mode) {
+    return db.transaction(memoConfig.DB_STORE_NAME, mode).objectStore(memoConfig.DB_STORE_NAME);
+}

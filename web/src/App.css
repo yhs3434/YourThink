@@ -35,17 +35,36 @@
 .modal_component_visible {
   position: fixed;
   display: block;
-  width: 300px;
-  height: 150px;
-  top: 50%;
-  left: 50%;
-  margin-left: -150px;
-  margin-top: -75px;
-  background: white;
-  border: 1px solid black;
-  z-index: 10;
 }
 
 .modal_component_hide {
   display: none;
+}
+
+.modal_wrap {
+  background: white;
+  display: flex;
+  margin: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  align-items: center;
+  justify-content: center;
+  width: 320px;
+  height: 180px;
+  top: 50%;
+  left: 50%;
+  border: 1px solid black;
+  margin-left: -90px;
+  margin-top: -200px;
+  z-index: 3;
+}
+
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.16);
+  z-index: -1;
 }

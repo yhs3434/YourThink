@@ -1,34 +1,15 @@
 import React, {Component} from 'react';
 import './css/WriteDiary.css';
-import {openDB} from '../lib/indexeddb';
+import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 
 class WriteDiary extends Component {
     state = {
         memoTitle: '',
-        memoContent: '',
-        db: undefined,
-        DB_NAME: undefined,
-        DB_VERSION: undefined,
-        DB_STORE_NAME: undefined
+        memoContent: ''
     }
     
     async componentDidMount() {
-        const ret = await openDB();
-        this.setState({
-            db: ret,
-            DB_NAME: ret.name,
-            DB_VERSION: ret.version,
-            DB_STORE_NAME: ret.objectStoreNames[0]
-        });
-    }
-
-    // store 반환
-    getObjectStore = (store_name, mode) => {
-        if (Boolean(this.state.db)) {
-            let db = this.state.db;
-            return db.transaction(store_name, mode).objectStore(store_name);
-        }
     }
 
     handleChange = (event) => {
@@ -37,7 +18,7 @@ class WriteDiary extends Component {
         });
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
         const superthis = this;
         const obj = {
@@ -45,10 +26,11 @@ class WriteDiary extends Component {
             memoContent: this.state.memoContent,
             published: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
-        let store = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
+        const db = await openDB();
+        const objectStore = getObjectStore(db, 'readwrite');
         let req;
         try {
-            req = store.add(obj);
+            req = objectStore.add(obj);
             
         } catch (e) {}
         req.onsuccess = (evt) => {

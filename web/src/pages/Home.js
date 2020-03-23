@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
 
-export default class Home extends Component {
+class Home extends Component {
     render() {
+        console.log(this.props);
         return(
             <div>
                 <p>This is Home!</p>
@@ -9,3 +11,5 @@ export default class Home extends Component {
         )
     }
 }
+
+export default withRouter(Home);

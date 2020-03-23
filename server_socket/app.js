@@ -30,39 +30,38 @@ const wss = new WebSocket.Server({
 });
 
 wss.on('connection', function connection(ws, req) {
+    console.log(`${req.connection.remoteAddress} is connected`);
     ws.on('message', function incoming(res) {
         const {type, payload} = JSON.parse(unescape(res));
-        switch (type) {
-            case 'init':
-                break;
+        if (type === 'init') {
 
-            case 'save':
-                //console.log(type, payload);
-                const {memoId, memoTitle, memoContent, published} = payload;
-                const query = `
+        } else if (type === 'save') {
+            const {memoId, memoTitle, memoContent, published} = payload;
+            const query = `
                 INSERT INTO memo SET memoId = ?, memoTitle = ?, memoContent = ?, published = ?
-                `
-                conn.query(query, [memoId, memoTitle, memoContent, published],(err, rows, fields) => {
-                    if (!err) {
-                        ws.send('success');
-                    } else {
-                        console.error(err);
-                        ws.send('fail');
-                    }
-                })
-                break;
-
-            case 'test':
-                conn.query('select * from memo', (err, rows, fields) => {
-                    if (!err) {
-                        console.log(rows[0]);
-                        console.log(rows[0].memoTitle);
-                    }
-                })
-                break;
-                
-            default:
-                console.log('default');
+            `
+            conn.query(query, [memoId, memoTitle, memoContent, published],(err, rows, fields) => {
+                if (!err) {
+                    ws.send('success');
+                } else {
+                    console.error(err);
+                    ws.send('fail');
+                }
+            })
+        } else if (type === 'public') {
+            console.log('public payload', payload);
+            const {memoTitle, memoContent, published} = payload;
+            const query = `
+                INSERT INTO public_memo SET memoTitle = ?, memoContent = ?, published = ?
+            `
+            conn.query(query, [memoTitle, memoContent, published], (err, rows, fields) => {
+                if (!err) {
+                    ws.send('success');
+                } else {
+                    console.error(err);
+                    ws.send('fail');
+                }
+            })
         }
     })
 

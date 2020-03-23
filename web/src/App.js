@@ -18,16 +18,25 @@ import axios from 'axios';
 function App() {
   const [logged, setLogged] = useState(true);
   const [accessToken, setAccessToken] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const [userId, setUserId] = useState('');
   useEffect(() => {
     // indexedDB 가 지원하지 않는 경우
     if (!window.indexedDB) {
       window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
     }
-  })
+    window.Kakao.init(process.env.REACT_APP_KAKAO_KEY);
+  }, [])
 
-  const naverEmail = (email) => {
-    setUserEmail(email);
+  const setNaverId = (id) => {
+    setUserId(id);
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = 'naver';
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = id;
+  }
+
+  const setKakaoId = (id) => {
+    setUserId(id);
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = 'kakao';
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = id;
   }
 
   const logIn = () => {
@@ -54,7 +63,7 @@ function App() {
           <Header logged={logged}/>
         </header>
         <nav>
-          <p>{userEmail}</p>
+          <p>{userId}</p>
           <p>Hello World! This is someone's thinking application!</p>
         </nav>
         <Switch>
@@ -73,12 +82,19 @@ function App() {
           <Route path = "/other">
             <OtherDiary />
           </Route>
-          <Route name="detailPage" path = "/detail/:id" component={DetailDiary}/>
+          <Route name="detailPage" path = "/detail/:id">
+            <DetailDiary 
+              setKakaoId={setKakaoId}
+            />
+          </Route>
           <Route path="/modify/:id" component={ModifyDiary}/>
           <Route path="/oauth">
-            <OauthCallback naverEmail={naverEmail}/>
+            <OauthCallback setNaverId={setNaverId}/>
           </Route>
           <Route exact path = "/">
+            <Home/>
+          </Route>
+          <Route path="/home/:id">
             <Home/>
           </Route>
         </Switch>

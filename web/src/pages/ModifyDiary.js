@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {openDB} from '../lib/indexeddb';
+import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 
 class ModifyDiary extends Component {
@@ -8,11 +8,6 @@ class ModifyDiary extends Component {
         memoContent: '',
 
         memoId: undefined,
-
-        db: undefined,
-        DB_NAME: undefined,
-        DB_VERSION: undefined,
-        DB_STORE_NAME: undefined
     }
 
     async componentDidMount() {
@@ -21,15 +16,8 @@ class ModifyDiary extends Component {
             memoId: id
         });
         
-        const ret = await openDB();
-        this.setState({
-            db: ret,
-            DB_NAME: ret.name,
-            DB_VERSION: ret.version,
-            DB_STORE_NAME: ret.objectStoreNames[0]
-        });
-
-        let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readonly');
+        const db = await openDB();
+        let objectStore = getObjectStore(db, 'readonly');
         let request = objectStore.get(id);
         request.onerror = (event) => {
             console.log('가져오기 실패');
@@ -47,20 +35,13 @@ class ModifyDiary extends Component {
         }
     }
 
-    getObjectStore = (store_name, mode) => {
-        if (Boolean(this.state.db)) {
-            let db = this.state.db;
-            return db.transaction(store_name, mode).objectStore(store_name);
-        }
-    }
-
     handleChange = (event) => {
         this.setState({
             [event.currentTarget.name]: event.currentTarget.value
         });
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
         const superthis = this;
         const obj = {
@@ -68,7 +49,8 @@ class ModifyDiary extends Component {
             memoContent: this.state.memoContent,
             published: this.state.published
         };
-        let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
+        const db = await openDB();
+        const objectStore = getObjectStore(db, 'readwrite');
         let request = objectStore.get(this.state.memoId);
         request.onsuccess = (event) => {
             let data = event.target.result;

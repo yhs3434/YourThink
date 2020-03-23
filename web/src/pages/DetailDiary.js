@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {openDB} from '../lib/indexeddb';
+import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 import Oauth from '../components/oauth.js';
 
@@ -11,11 +11,6 @@ class DetailDiary extends Component {
         
         memoId: undefined,
 
-        db: undefined,
-        DB_NAME: undefined,
-        DB_VERSION: undefined,
-        DB_STORE_NAME: undefined,
-
         modalOauth: false,
     }
 
@@ -25,15 +20,8 @@ class DetailDiary extends Component {
             memoId: id
         });
         
-        const ret = await openDB();
-        this.setState({
-            db: ret,
-            DB_NAME: ret.name,
-            DB_VERSION: ret.version,
-            DB_STORE_NAME: ret.objectStoreNames[0]
-        });
-
-        let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readonly');
+        const db = await openDB();
+        let objectStore = getObjectStore(db, 'readonly');
         let request = objectStore.get(id);
         request.onerror = (event) => {
             console.log('가져오기 실패');
@@ -63,11 +51,12 @@ class DetailDiary extends Component {
         });
     }
 
-    deleteButtonClicked = (event) => {
+    deleteButtonClicked = async (event) => {
         const result = window.confirm("정말 삭제 하시겠습니까?");
         const superthis = this;
         if (Boolean(this.state.memoTitle) && result) {
-            let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readwrite');
+            const db = await openDB();
+            let objectStore = getObjectStore(db, 'readwrite');
             let request = objectStore.delete(this.state.memoId);
             request.onsuccess = function(event) {
                 superthis.props.history.replace('/my');
@@ -91,17 +80,33 @@ class DetailDiary extends Component {
         }
     }
 
-    saveButtonClicked = (event) => {
-        const result = window.confirm("저장 하시겠습니까?");
+    saveButtonClicked = async (event) => {
+        //const result = window.confirm("저장 하시겠습니까?");  
+        if (!Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`])) {
+            this.loginModalControl();
+            return
+        } else {
+            const userId = sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`];
+            const result = window.confirm(`현재 ${userId}로 로그인 되어 있습니다. 해당 메일로 저장 하시겠습니까?
+            확인 : 진행
+            취소 : 로그아웃
+            `);
+            if (!result) {
+                sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = '';
+                return
+            }
+        }
 
-        if (Boolean(this.state.memoTitle) && result) {
-            alert('준비중입니다');
+        if (Boolean(this.state.memoTitle) && Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`])) {
             const id = Number(this.props.match.params.id);
-            let objectStore = this.getObjectStore(this.state.DB_STORE_NAME, 'readonly');
+            const userId = sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`];
+            const platform = sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`];
+            const db = await openDB();
+            let objectStore = getObjectStore(db, 'readonly');
             let request = objectStore.get(id);
             request.onsuccess = (event) => {
                 const {memoTitle, memoContent, published} = request.result;
-                const memoId = `sampleId_${published}`;
+                const memoId = `${platform}${userId}_${published}`;
                 const obj = {
                     memoId, memoTitle, memoContent, published
                 };
@@ -111,7 +116,7 @@ class DetailDiary extends Component {
                     payload: obj
                 };
                 // 임시 주소
-                const ws = new WebSocket('ws://localhost:8080/');
+                const ws = new WebSocket(process.env.REACT_APP_SERVER_SOCKET_URL);
                 ws.onopen = (event) => {
                     ws.send(escape(JSON.stringify(message)));
                 }
@@ -136,18 +141,36 @@ class DetailDiary extends Component {
         }
     }
 
-    testButtonClicked = (event) => {
+    publicButtonClicked = async (event) => {
+        console.log('공개');
+        const db = await openDB();
+        const objectStore = getObjectStore(db, 'readonly');
+        const request = objectStore.get(this.state.memoId);
+        request.onsuccess = (event) => {
+            const {memoTitle, memoContent, published} = request.result;
+            const obj = {
+                memoTitle, memoContent, published
+            };
+            const message = {
+                type: 'public',
+                payload: obj
+            };
+            const ws = new WebSocket(process.env.REACT_APP_SERVER_SOCKET_URL);
+            ws.onopen = (event) => {
+                ws.send(escape(JSON.stringify(message)));
+                ws.close();
+            }
+            ws.onerror = (event) => {
+                ws.close();
+            }
+        }
+    }
+
+    loginModalControl = (event) => {
         if (this.state.modalOauth) {
             this.modalClose();
         } else {
             this.modalOpen();
-        }
-    }
-
-    getObjectStore = (store_name, mode) => {
-        if (Boolean(this.state.db)) {
-            let db = this.state.db;
-            return db.transaction(store_name, mode).objectStore(store_name);
         }
     }
 
@@ -172,6 +195,7 @@ class DetailDiary extends Component {
                 fontSize: 20
             }
         }
+
         return (
             <div>
                 <div style={style.wrap}>
@@ -179,10 +203,10 @@ class DetailDiary extends Component {
                     <pre style={style.contentWrap}>{this.state.memoContent}</pre>
                     <pre>{this.state.published}</pre>
                     <div>
+                        <button onClick={this.publicButtonClicked}>공개</button>
                         <button onClick={this.saveButtonClicked}>저장</button>
                         <button onClick={this.modifyButtonClicked}>수정</button>
                         <button onClick={this.deleteButtonClicked}>삭제</button>
-                        <button onClick={this.testButtonClicked}>테스트</button>
                     </div>
                     
                 </div>
@@ -193,6 +217,7 @@ class DetailDiary extends Component {
                     <Oauth 
                     modalOpen={this.modalOpen}
                     modalClose={this.modalClose}
+                    setKakaoId={this.props.setKakaoId}
                     />
                 </div>
             </div>

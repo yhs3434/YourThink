@@ -16,7 +16,9 @@ class Header extends Component {
                     this.props.logged
                     ?
                     <div className="headerLeft">
-                        <Link to="/">홈</Link>
+                        {
+                            //<Link to="/">홈</Link>
+                        }
                         <Link to="/my">내 다이어리</Link>
                         <Link to="/other">타인 다이어리</Link>
                     </div>
