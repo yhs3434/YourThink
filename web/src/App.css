@@ -68,3 +68,11 @@
   background-color: rgba(0,0,0,0.16);
   z-index: -1;
 }
+
+.footer {
+  background: white;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  width: 100%;
+}

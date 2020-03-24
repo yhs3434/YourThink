@@ -2,6 +2,9 @@ const mysql = require('mysql');
 const conn = mysql.createConnection(require('./config/mysqlConfig'));
 conn.connect();
 
+// library import
+const datetimeToJs = require('./lib/mysqlToJs');
+
 const WebSocket = require('ws');
 
 let wsHash = {}
@@ -62,8 +65,22 @@ wss.on('connection', function connection(ws, req) {
                     ws.send('fail');
                 }
             })
+        } else if (type === 'publicGet') {
+            const dayOffset = 1;
+            const query = `
+                SELECT * from (SELECT memoTitle, memoContent, published FROM public_memo
+                     WHERE publiced BETWEEN date_add(now(), interval -${dayOffset} day) and now()
+                    ) as m;
+            `;
+            conn.query(query, (err, rows, fields) => {
+                for (row of rows) {
+                    // 이미 본 거 분류
+                }
+
+                const retRow = rows[Math.floor(Math.random() * rows.length)];
+                ws.send(escape(JSON.stringify(retRow)));
+                ws.send('close');
+            });
         }
     })
-
-    ws.send('something');
 })

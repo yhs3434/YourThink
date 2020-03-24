@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import Header from './headers/Header';
+import Footer from './headers/Footer';
 import WriteDiary from './pages/WriteDiary';
 import MyDiary from './pages/MyDiary';
 import OtherDiary from './pages/OtherDiary';
@@ -64,7 +65,6 @@ function App() {
         </header>
         <nav>
           <p>{userId}</p>
-          <p>Hello World! This is someone's thinking application!</p>
         </nav>
         <Switch>
           <Route path = "/signup">
@@ -98,8 +98,8 @@ function App() {
             <Home/>
           </Route>
         </Switch>
-        <footer>
-          this is footer
+        <footer className="footer">
+          <Footer />
         </footer>
       </div>
     </Router>
