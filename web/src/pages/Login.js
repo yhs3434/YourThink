@@ -1,93 +1,63 @@
 import React, {Component} from 'react';
-import './css/Login.css'
-import {withRouter, Link} from 'react-router-dom';
-import axios from 'axios';
+import {withRouter} from 'react-router-dom';
 
 class Login extends Component {
-    state = {
-        uname : "",
-        pwd : ""
-    }
-
-    setCookie = (name, value, expires) => {
-        var time = new Date();
-        expires = expires ? time.setDate(time.getDate() + expires) : '';
-        document.cookie=name+'='+escape(value)+(expires?'; expires='+time.toGMTString():'');
-    }
-
-    getCookie = (c_name) => {
-        var i,x,y,ARRcookies=document.cookie.split(";");
-        for (i=0;i<ARRcookies.length;i++){
-            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-            x=x.replace(/^\s+|\s+$/g,"");
-            if (x==c_name){
-                return unescape(y);
-            }
+componentDidMount() {
+    const naverLogin = new window.naver.LoginWithNaverId(
+        {
+            clientId: process.env.REACT_APP_NAVER_CLIENT_ID,
+            callbackUrl: `${process.env.REACT_APP_NAVER_CALLBACK_URL}`,
+            isPopup: false,
+            loginButton: {color: "green", type: 3, height: 48} /* 로그인 버튼의 타입을 지정 */
         }
-    }
+    );
 
-    replaceBack = () => {
-        let { from } = this.props.location.state || {from: {pathname: "/"}};
-        this.props.history.replace(from);
-    }
+   /* 설정정보를 초기화하고 연동을 준비 */
+    naverLogin.init();
 
-    replaceCur = () => {
-        window.location.href = "/login"
-    }
-
-    handleChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-    }
-
-    handleSubmit = async (event) => {
-        const {uname, pwd} = this.state;
-        const data = {
-            uname, pwd
-        };
-        event.preventDefault();
-        try {
-            const ret = await axios.post(`${process.env.REACT_APP_HTTP_SERVER_URI}/auth/login`, data);
-            console.log('ret', ret.data)
-            if (ret.data.logged == true) {
-                this.setCookie('accessToken', ret.data.accessToken, 14*24*60*60*1000);
-                this.replaceBack();
-            } else {
-                alert("로그인 실패");
-                this.replaceCur();
-            }
-        } catch(err) {
-            console.log('err', err)
-            alert("로그인 실패");
-            this.replaceCur();
+    // 사용할 앱의 JavaScript 키를 설정해 주세요.
+    // window.Kakao.init(process.env.REACT_APP_KAKAO_KEY);
+    
+    const props = this.props;
+    // 카카오 로그인 버튼을 생성합니다.
+    window.Kakao.Auth.createLoginButton({
+        container: '#kakao-login-btn',
+        success: function(authObj) {
+            //console.log(JSON.stringify(authObj));
+            window.Kakao.Auth.getStatusInfo((res) => {
+                props.setKakaoId(res.user.id);
+            });
+            props.history.replace('/');
+        },
+        fail: function(err) {
+            alert(JSON.stringify(err));
         }
-    }
-
-    signupBtnClicked = () => {
-        this.props.history.push('/signup');
-    }
+    });
+}
 
     render() {
+        const style = {
+            wrap: {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            },
+            authWrap: {
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '90%',
+                height: '400px',
+                backgroundColor: 'white'
+            }
+        }
         return (
-            <div>
-                <form onSubmit={/*this.handleSubmit*/ console.log('test')} method="post">
-                    <div className="container">
-                        <label htmlFor="uname">아이디</label>
-                        <input type="text" placeholder="Enter Username" name="uname" onChange={this.handleChange} required />
-                        <label htmlFor="pwd">비밀번호</label>
-                        <input type="password" placeholder="Enter Password" name="pwd" onChange={this.handleChange} required />
-                        <button type="submit">로그인</button>
-                        <label>
-                            <input type="checkbox" name="remember"/> Remember me
-                        </label>
-                    </div>
-                    <div className="containerBottom" style={{backgroundColor:'#f1f1f1'}}>
-                        <button type="button" className="signupBtn" onClick={this.signupBtnClicked}>회원 가입</button>
-                        <span className="psw">Forgot <a href="#">password?</a></span>
-                    </div>
-                </form>
+            <div style={style.wrap}>
+                <article style={style.authWrap}>
+                    <div id="kakao-login-btn" onClick={this.kakaoClicked}></div>
+                    <div id='naverIdLogin' onClick={this.naverClicked}></div>
+                </article>
             </div>
         )
     }

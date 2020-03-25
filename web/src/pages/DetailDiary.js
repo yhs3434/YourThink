@@ -82,19 +82,9 @@ class DetailDiary extends Component {
 
     saveButtonClicked = async (event) => {
         //const result = window.confirm("저장 하시겠습니까?");  
-        if (!Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`])) {
-            this.loginModalControl();
+        if (!Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.logged`])) {
+            alert('로그인이 필요한 서비스입니다.')
             return
-        } else {
-            const userId = sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`];
-            const result = window.confirm(`현재 ${userId}로 로그인 되어 있습니다. 해당 메일로 저장 하시겠습니까?
-            확인 : 진행
-            취소 : 로그아웃
-            `);
-            if (!result) {
-                sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = '';
-                return
-            }
         }
 
         if (Boolean(this.state.memoTitle) && Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`])) {
@@ -215,9 +205,9 @@ class DetailDiary extends Component {
                     :"modal_component_hide"
                 }>
                     <Oauth 
-                    modalOpen={this.modalOpen}
-                    modalClose={this.modalClose}
-                    setKakaoId={this.props.setKakaoId}
+                        modalOpen={this.modalOpen}
+                        modalClose={this.modalClose}
+                        setKakaoId={this.props.setKakaoId}
                     />
                 </div>
             </div>

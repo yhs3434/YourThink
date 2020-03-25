@@ -17,7 +17,7 @@ import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import axios from 'axios';
 
 function App() {
-  const [logged, setLogged] = useState(true);
+  const [logged, setLogged] = useState(false);
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState('');
   useEffect(() => {
@@ -32,19 +32,26 @@ function App() {
     setUserId(id);
     sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = 'naver';
     sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = id;
+    logIn();
   }
 
   const setKakaoId = (id) => {
     setUserId(id);
     sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = 'kakao';
     sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = id;
+    logIn();
   }
 
   const logIn = () => {
     setLogged(true);
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.logged`] = 'true'
   }
 
   const logOut = () => {
+    setUserId(null);
+    sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.platform`);
+    sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.userId`);
+    sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.logged`);
     setLogged(false);
   }
 
@@ -61,46 +68,52 @@ function App() {
           // <button onClick={sayHello}>send hello</button>
         }
         <header className="mainHeader">
-          <Header logged={logged}/>
+          <Header logged={logged} logOut={logOut} />
         </header>
         <nav>
-          <p>{userId}</p>
+          <span>{userId}</span>
         </nav>
-        <Switch>
-          <Route path = "/signup">
-            <SignUp/>
-          </Route>
-          <Route path = "/login">
-            <Login/>
-          </Route>
-          <Route path = "/writeDiary">
-            <WriteDiary logged={logged}/>
-          </Route>
-          <Route path = "/my">
-            <MyDiary />
-          </Route>
-          <Route path = "/other">
-            <OtherDiary />
-          </Route>
-          <Route name="detailPage" path = "/detail/:id">
-            <DetailDiary 
-              setKakaoId={setKakaoId}
-            />
-          </Route>
-          <Route path="/modify/:id" component={ModifyDiary}/>
-          <Route path="/oauth">
-            <OauthCallback setNaverId={setNaverId}/>
-          </Route>
-          <Route exact path = "/">
-            <Home/>
-          </Route>
-          <Route path="/home/:id">
-            <Home/>
-          </Route>
-        </Switch>
-        <footer className="footer">
-          <Footer />
-        </footer>
+        <section className="appBody">
+          <Switch>
+            <Route path = "/signup">
+              <SignUp/>
+            </Route>
+            <Route path = "/login">
+              <Login setKakaoId={setKakaoId}/>
+            </Route>
+            <Route path = "/writeDiary">
+              <WriteDiary logged={logged}/>
+            </Route>
+            <Route path = "/my">
+              <MyDiary />
+            </Route>
+            <Route path = "/other">
+              <OtherDiary />
+            </Route>
+            <Route name="detailPage" path = "/detail/:id">
+              <DetailDiary 
+                setKakaoId={setKakaoId}
+              />
+            </Route>
+            <Route path="/modify/:id" component={ModifyDiary}/>
+            <Route path="/oauth">
+              <OauthCallback setNaverId={setNaverId}/>
+            </Route>
+            <Route exact path = "/">
+              <Home/>
+            </Route>
+            <Route path="/home/:id">
+              <Home/>
+            </Route>
+          </Switch>
+        </section>
+        {
+          /*
+          <footer className="footer">
+            <Footer />
+          </footer>
+          */
+        }
       </div>
     </Router>
   );

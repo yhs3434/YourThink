@@ -66,10 +66,10 @@ wss.on('connection', function connection(ws, req) {
                 }
             })
         } else if (type === 'publicGet') {
-            const dayOffset = 1;
+            const weekOffset = 4;
             const query = `
                 SELECT * from (SELECT memoTitle, memoContent, published FROM public_memo
-                     WHERE publiced BETWEEN date_add(now(), interval -${dayOffset} day) and now()
+                     WHERE publiced BETWEEN date_add(now(), interval -${weekOffset} week) and now()
                     ) as m;
             `;
             conn.query(query, (err, rows, fields) => {

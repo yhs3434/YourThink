@@ -5,8 +5,7 @@
     height: 100%;
     align-items: center;
     justify-content: space-between;
-    margin-left: 50px;
-    margin-right: 50px;
+    box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6)
 }
 
 .headerLeft {

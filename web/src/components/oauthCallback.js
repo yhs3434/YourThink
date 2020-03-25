@@ -29,12 +29,12 @@ class OauthCallback extends Component {
                     return;
                 }
                 setNaverId(userId);
-                history.replace(`/my`);
+                history.replace(`/`);
 
                 //window.location.replace("http://" + window.location.hostname + ( (location.port==""||location.port==undefined)?"":":" + location.port) + "/sample/main.html");
             } else {
                 console.log("callback 처리에 실패하였습니다.");
-                history.replace('/my');
+                history.replace('/');
             }
         });
     }

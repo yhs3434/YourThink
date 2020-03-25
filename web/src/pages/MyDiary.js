@@ -36,19 +36,24 @@ class MyDiary extends Component {
     render() {
         return(
             <div className="myDiaryWrap">
-                <ul>
-                    {
-                        this.state.memos.map((memo, i) => {
-                            return(
-                                <li>
-                                    <Link to={`/detail/${memo.id}`} params={{id: memo.id}}>
-                                        {memo.memoTitle} {memo.published}
-                                    </Link>
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
+                <div>
+                    <Link to='/writeDiary'>글 쓰기</Link>
+                </div>
+                <div>
+                    <ul>
+                        {
+                            this.state.memos.map((memo, i) => {
+                                return(
+                                    <li>
+                                        <Link to={`/detail/${memo.id}`} params={{id: memo.id}}>
+                                            {memo.memoTitle} {memo.published}
+                                        </Link>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>
             </div>
         )
     }
