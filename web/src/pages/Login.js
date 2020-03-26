@@ -23,7 +23,7 @@ componentDidMount() {
     window.Kakao.Auth.createLoginButton({
         container: '#kakao-login-btn',
         success: function(authObj) {
-            //console.log(JSON.stringify(authObj));
+            console.log(JSON.stringify(authObj));
             window.Kakao.Auth.getStatusInfo((res) => {
                 props.setKakaoId(res.user.id);
             });

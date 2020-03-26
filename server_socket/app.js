@@ -2,6 +2,8 @@ const mysql = require('mysql');
 const conn = mysql.createConnection(require('./config/mysqlConfig'));
 conn.connect();
 
+const wsLib = require('./lib/websocket');
+
 // library import
 const datetimeToJs = require('./lib/mysqlToJs');
 
@@ -81,6 +83,23 @@ wss.on('connection', function connection(ws, req) {
                 ws.send(escape(JSON.stringify(retRow)));
                 ws.send('close');
             });
+        } else if (type === 'getMine') {
+            const {userId, platform} = payload;
+            const token = `${platform}${userId}`;
+            console.log('token', token);
+            const query = `
+                SELECT memoTitle, memoContent, published 
+                FROM memo 
+                WHERE memoId LIKE "${token}%";
+            `
+            conn.query(query, (err, rows, fields) => {
+                for (let row of rows) {
+                    ws.send(wsLib.encodeToJs(row));
+                }
+                ws.send('close');
+            })
+        } else if (type === 'getYours') {
+
         }
     })
 })

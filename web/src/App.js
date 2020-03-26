@@ -11,6 +11,7 @@ import OtherDiary from './pages/OtherDiary';
 import DetailDiary from './pages/DetailDiary';
 import ModifyDiary from './pages/ModifyDiary';
 import OauthCallback from './components/oauthCallback';
+import SaveDiary from './pages/SaveDiary';
 
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 
@@ -19,40 +20,49 @@ import axios from 'axios';
 function App() {
   const [logged, setLogged] = useState(false);
   const [accessToken, setAccessToken] = useState('');
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState(null);
   useEffect(() => {
     // indexedDB 가 지원하지 않는 경우
     if (!window.indexedDB) {
       window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
     }
     window.Kakao.init(process.env.REACT_APP_KAKAO_KEY);
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.logged`])) {
+      if (sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] === 'kakao') {
+        setNaverId(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`]);
+      } else if (sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] === 'naver') {
+        setKakaoId(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`]);
+      }
+    } else {
+      logOut();
+    }
+  }, [logged]);
 
   const setNaverId = (id) => {
-    setUserId(id);
-    sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = 'naver';
-    sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = id;
-    logIn();
+    logIn('naver', id);
   }
 
   const setKakaoId = (id) => {
-    setUserId(id);
-    sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = 'kakao';
-    sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = id;
-    logIn();
+    logIn('kakao', id);
   }
 
-  const logIn = () => {
+  const logIn = (platform, userId) => {
     setLogged(true);
+    setUserId(userId);
     sessionStorage[`${process.env.REACT_APP_APP_NAME}.logged`] = 'true'
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`] = platform;
+    sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`] = userId;
   }
 
   const logOut = () => {
+    setLogged(false);
     setUserId(null);
     sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.platform`);
     sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.userId`);
     sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.logged`);
-    setLogged(false);
   }
 
   const sayHello = async () => {
@@ -104,6 +114,9 @@ function App() {
             </Route>
             <Route path="/home/:id">
               <Home/>
+            </Route>
+            <Route path="/save/:mode">
+              <SaveDiary/>
             </Route>
           </Switch>
         </section>

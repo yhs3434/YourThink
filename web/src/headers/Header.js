@@ -13,10 +13,21 @@ class Header extends Component {
         // 유저데이터 불러오기
     };
 
+    // 메뉴 펼치기, 접기
     myMenuClicked = (event) => {
         this.setState({
             myMemuClick: !this.state.myMemuClick
         })
+    }
+
+    saveMineClicked = (event) => {
+        this.props.history.push('/save/mine');
+        this.myMenuClicked();
+    }
+
+    saveYoursClicked = (event) => {
+        this.props.history.push('/save/yours');
+        this.myMenuClicked();
     }
 
     render () {
@@ -55,8 +66,8 @@ class Header extends Component {
                                 <span onClick={this.myMenuClicked}>사진</span>
                                 <div style={this.state.myMemuClick?style.myMenu:style.myMenuHidden}>
                                     <ul>
-                                        <li>저장한 나의 글</li>
-                                        <li>저장한 너의 글</li>
+                                        <li><span onClick={this.saveMineClicked}>저장한 나의 글</span></li>
+                                        <li><span onClick={this.saveYoursClicked}>저장한 너의 글</span></li>
                                         <li>고객센터</li>
                                         <li><span onClick={this.props.logOut}>로그아웃</span></li>
                                     </ul>
@@ -77,4 +88,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header);

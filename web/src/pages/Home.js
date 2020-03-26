@@ -3,7 +3,6 @@ import {withRouter} from 'react-router-dom';
 
 class Home extends Component {
     render() {
-        console.log(this.props);
         return(
             <div>
                 <p>This is Home!</p>
