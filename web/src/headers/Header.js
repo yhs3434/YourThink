@@ -21,12 +21,12 @@ class Header extends Component {
     }
 
     saveMineClicked = (event) => {
-        this.props.history.push('/save/mine');
+        this.props.history.push('/redirect/save/mine');
         this.myMenuClicked();
     }
 
     saveYoursClicked = (event) => {
-        this.props.history.push('/save/yours');
+        this.props.history.push('/redirect/save/yours');
         this.myMenuClicked();
     }
 

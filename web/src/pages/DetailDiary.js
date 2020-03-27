@@ -100,7 +100,6 @@ class DetailDiary extends Component {
                 const obj = {
                     memoId, memoTitle, memoContent, published
                 };
-                console.log('reqObj', obj);
                 const message = {
                     type: 'save',
                     payload: obj
@@ -167,10 +166,7 @@ class DetailDiary extends Component {
     render() {
         const style = {
             wrap: {
-                display: 'flex',
-                flexDirection: 'column',
-                width: '80%',
-                alignItems: 'center'
+
             },
             titleWrap: {
                 display: 'flex',
@@ -189,9 +185,14 @@ class DetailDiary extends Component {
         return (
             <div>
                 <div style={style.wrap}>
-                    <pre><span style={style.title}>{this.state.memoTitle}</span></pre>
-                    <pre style={style.contentWrap}>{this.state.memoContent}</pre>
-                    <pre>{this.state.published}</pre>
+                    <div>
+                        <h3>제목</h3>
+                        <pre>{this.state.memoTitle}</pre>
+                        <h3>내용</h3>
+                        <pre>{this.state.memoContent}</pre>
+                        <h3>날짜</h3>
+                        <pre>{this.state.published}</pre>
+                    </div>
                     <div>
                         <button onClick={this.publicButtonClicked}>공개</button>
                         <button onClick={this.saveButtonClicked}>저장</button>

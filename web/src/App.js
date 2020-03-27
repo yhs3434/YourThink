@@ -5,6 +5,7 @@ import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import Header from './headers/Header';
 import Footer from './headers/Footer';
+import DetailYours from './pages/DetailYours';
 import WriteDiary from './pages/WriteDiary';
 import MyDiary from './pages/MyDiary';
 import OtherDiary from './pages/OtherDiary';
@@ -12,6 +13,7 @@ import DetailDiary from './pages/DetailDiary';
 import ModifyDiary from './pages/ModifyDiary';
 import OauthCallback from './components/oauthCallback';
 import SaveDiary from './pages/SaveDiary';
+import Redirect from './pages/redirect/Redirect';
 
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 
@@ -21,6 +23,11 @@ function App() {
   const [logged, setLogged] = useState(false);
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState(null);
+
+  const [memoTitle, setMemoTitle] = useState(null);
+  const [memoContent, setMemoContent] = useState(null);
+  const [published, setPublished] = useState(null);
+
   useEffect(() => {
     // indexedDB 가 지원하지 않는 경우
     if (!window.indexedDB) {
@@ -72,8 +79,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <button onClick={logIn}>login</button>
-        <button onClick={logOut}>logout</button>
         {
           // <button onClick={sayHello}>send hello</button>
         }
@@ -116,7 +121,13 @@ function App() {
               <Home/>
             </Route>
             <Route path="/save/:mode">
-              <SaveDiary/>
+              <SaveDiary setMemoTitle={setMemoTitle} setMemoContent={setMemoContent} setPublished={setPublished}/>
+            </Route>
+            <Route path="/detailyours">
+              <DetailYours memoTitle={memoTitle} memoContent={memoContent} published={published}/>
+            </Route>
+            <Route path="/redirect/:page/:mode">
+              <Redirect/>
             </Route>
           </Switch>
         </section>

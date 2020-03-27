@@ -19,18 +19,20 @@ class Oauth extends Component {
         // window.Kakao.init(process.env.REACT_APP_KAKAO_KEY);
         const setKakaoId = this.props.setKakaoId;
         // 카카오 로그인 버튼을 생성합니다.
-        window.Kakao.Auth.createLoginButton({
-            container: '#kakao-login-btn',
-            success: function(authObj) {
-                //console.log(JSON.stringify(authObj));
-                window.Kakao.Auth.getStatusInfo((res) => {
-                    setKakaoId(res.user.id);
-                })
-            },
-            fail: function(err) {
-                alert(JSON.stringify(err));
-            }
-        });
+        if (Boolean(window.Kakao.Auth)){
+            window.Kakao.Auth.createLoginButton({
+                container: '#kakao-login-btn',
+                success: function(authObj) {
+                    //console.log(JSON.stringify(authObj));
+                    window.Kakao.Auth.getStatusInfo((res) => {
+                        setKakaoId(res.user.id);
+                    })
+                },
+                fail: function(err) {
+                    alert(JSON.stringify(err));
+                }
+            });
+        }
     }
 
     naverClicked = (event) => {

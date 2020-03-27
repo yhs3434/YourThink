@@ -12,9 +12,13 @@ class SaveDiary extends Component {
             alert('로그인이 필요한 서비스입니다.');
             this.props.history.replace('/');
         } else {
-            
+            const mode = this.props.match.params.mode;
+            if (mode === 'mine') {
+                this.getMine();
+            } else if (mode === 'yours') {
+                this.getYours();
+            }
         }
-
     }
 
     getMine = () => {
@@ -33,11 +37,12 @@ class SaveDiary extends Component {
             };
             ws.send(encodeToWs(message));
             ws.onmessage = (event) => {
-                if (event.data === 'close'){
+                const data = decodeFromWs(event.data);
+                if (data === 'close'){
                     console.log('close');
                     ws.close();
                 } else {
-                    let memo = decodeFromWs(event.data)
+                    let memo = data
                     this.setState({
                         memos: [memo ,...this.state.memos]
                     });
@@ -76,6 +81,15 @@ class SaveDiary extends Component {
         }
     }
 
+    memoClicked = (event) => {
+        const memo = this.state.memos[event.currentTarget.dataset.idx];
+        const {setMemoTitle, setMemoContent, setPublished} = this.props;
+        setMemoTitle(memo['memoTitle']);
+        setMemoContent(memo['memoContent']);
+        setPublished(memo['published']);
+        this.props.history.push('/detailyours');
+    }
+
     render() {
         return (
             <div>
@@ -83,13 +97,11 @@ class SaveDiary extends Component {
                     {
                         this.state.memos.map((memo, idx) => {
                             return (
-                                <li key={idx}>{idx} {memo.memoTitle} {memo.published}</li>
+                                <li key={idx} data-idx={idx} onClick={this.memoClicked}>{idx} {memo.memoTitle} {memo.published}</li>
                             )
                         })
                     }
                 </ul>
-                <button onClick={this.getMine}>나의 메모</button>
-                <button onClick={this.getYours}>너의 메모</button>
             </div>
         )
     }

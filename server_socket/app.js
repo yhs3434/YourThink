@@ -97,7 +97,7 @@ wss.on('connection', function connection(ws, req) {
                 for (let row of rows) {
                     ws.send(wsLib.encodeToJs(row));
                 }
-                ws.send('close');
+                ws.send(wsLib.encodeToJs('close'));
             });
         } else if (type === 'getYours') {
             const {userId, platform} = payload;
