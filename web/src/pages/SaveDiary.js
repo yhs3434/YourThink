@@ -14,22 +14,22 @@ class SaveDiary extends Component {
         } else {
             
         }
+
     }
 
-    getMineMemo = () => {
+    getMine = () => {
         this.setState({
             memos: []
         });
 
         const ws = new WebSocket(process.env.REACT_APP_SERVER_SOCKET_URL);
         ws.onopen = () => {
-            const payload = {
-                userId: sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`],
-                platform: sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`]
-            };
             const message = {
                 type: 'getMine',
-                payload
+                payload: {
+                    userId: sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`],
+                    platform: sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`]
+                }
             };
             ws.send(encodeToWs(message));
             ws.onmessage = (event) => {
@@ -40,6 +40,36 @@ class SaveDiary extends Component {
                     let memo = decodeFromWs(event.data)
                     this.setState({
                         memos: [memo ,...this.state.memos]
+                    });
+                }
+            }
+        }
+    }
+
+    getYours = () => {
+        this.setState({
+            memos: []
+        });
+
+        const ws = new WebSocket(process.env.REACT_APP_SERVER_SOCKET_URL);
+        ws.onopen = () => {
+            const message = {
+                type: 'getYours',
+                payload: {
+                    userId: sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`],
+                    platform: sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`]
+                }
+            };
+            ws.send(encodeToWs(message));
+            ws.onmessage = (event) => {
+                const data = decodeFromWs(event.data);
+                if (data === 'close'){
+                    console.log('close');
+                    ws.close();
+                } else {
+                    let memo = data;
+                    this.setState({
+                        memos: [memo, ...this.state.memos]
                     });
                 }
             }
@@ -58,7 +88,8 @@ class SaveDiary extends Component {
                         })
                     }
                 </ul>
-                <button onClick={this.getMineMemo}>테스트</button>
+                <button onClick={this.getMine}>나의 메모</button>
+                <button onClick={this.getYours}>너의 메모</button>
             </div>
         )
     }

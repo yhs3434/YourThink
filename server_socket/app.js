@@ -3,9 +3,10 @@ const conn = mysql.createConnection(require('./config/mysqlConfig'));
 conn.connect();
 
 const wsLib = require('./lib/websocket');
+const mysqlLib = require('./lib/mysql');
 
 // library import
-const datetimeToJs = require('./lib/mysqlToJs');
+const datetimeToJs = require('./lib/mysql');
 
 const WebSocket = require('ws');
 
@@ -37,7 +38,7 @@ const wss = new WebSocket.Server({
 wss.on('connection', function connection(ws, req) {
     console.log(`${req.connection.remoteAddress} is connected`);
     ws.on('message', function incoming(res) {
-        const {type, payload} = JSON.parse(unescape(res));
+        const {type, payload} = wsLib.decodeFromJs(res);
         if (type === 'init') {
 
         } else if (type === 'save') {
@@ -97,9 +98,36 @@ wss.on('connection', function connection(ws, req) {
                     ws.send(wsLib.encodeToJs(row));
                 }
                 ws.send('close');
-            })
+            });
         } else if (type === 'getYours') {
-
+            const {userId, platform} = payload;
+            const token = `${platform}${userId}`;
+            const query = `
+                SELECT memoTitle, memoContent, published
+                FROM public_save 
+                WHERE memoId LIKE "${token}%";
+            `;
+            conn.query(query, (err, rows, fields) => {
+                for (let row of rows) {
+                    ws.send(wsLib.encodeToJs(row));
+                }
+                ws.send(wsLib.encodeToJs('close'));
+            });
+        } else if (type === 'saveYours') {
+            console.log(type);
+            const {memoId, memoTitle, memoContent, published} = payload;
+            const query = `
+                INSERT INTO public_save 
+                SET memoId = ?, memoTitle = ?, memoContent = ?, published = ?;
+            `
+            const params = [memoId, memoTitle, memoContent, published];
+            conn.query(query, params, (err, rows, fields) => {
+                if (!err) {
+                    ws.send(wsLib.encodeToJs('close'));
+                } else {
+                    console.log('err', err);
+                }
+            })
         }
     })
 })
