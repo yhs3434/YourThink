@@ -109,12 +109,33 @@ a {
 
 .button-common {
   padding: 0.5rem;
-  border-radius: 20px;
-  background: #f5fbfe;
-  box-shadow:  9px 9px 50px #7b7e7f, 
-              -9px -9px 50px #ffffff;
+  border-radius: 0px;
+  background: linear-gradient(145deg, #0e90c8, #11abee);
+  box-shadow:  20px 20px 60px #0e88bd, 
+              -20px -20px 60px #12b8ff;
 }
 
 .button-common:hover {
-  background: #dde2e5;
+  background: linear-gradient(145deg, #11abee, #0e90c8);
+}
+
+.li-common {
+  border-radius: 10px;
+  background: linear-gradient(145deg, #d9e1e5, #ffffff);
+  box-shadow:  20px 20px 60px #cdd5d8, 
+              -20px -20px 60px #ffffff;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.li-common:hover {
+  background: linear-gradient(145deg, #ffffff, #d9e1e5);
+}
+
+.myDiaryWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 600px;
 }

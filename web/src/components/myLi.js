@@ -1,9 +1,15 @@
 import React from 'react';
 
-const myLi = ({memoTitle, memoContent, published}) => {
+const MyLi = ({memoTitle, memoContent, published}) => {
+    const style = {
+        wrap: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%'
+        }
+    }
     return (
-        <div>
-            tt
+        <div className="li-common" style={style.wrap}>
             <span>{memoTitle}</span>
             <span>{memoContent}</span>
             <span>{published}</span>
@@ -11,4 +17,4 @@ const myLi = ({memoTitle, memoContent, published}) => {
     )
 }
 
-export default myLi;
+export default MyLi;

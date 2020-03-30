@@ -86,7 +86,6 @@ function App() {
           <Header logged={logged} logOut={logOut} />
         </header>
         <nav>
-          <span>{userId}</span>
         </nav>
         <section className="appBody">
           <Switch>

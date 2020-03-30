@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import './css/MyDiary.css';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {Link} from "react-router-dom";
-import myLi from '../components/myLi';
+import MyLi from '../components/MyLi';
 
 class MyDiary extends Component {
     state = {
@@ -35,27 +35,32 @@ class MyDiary extends Component {
     }
 
     render() {
+        const style = {
+            ul: {
+                width: '100%'
+            }
+        }
         return(
             <div className="myDiaryWrap">
                 <div>
                     <Link className="button-common" to='/writeDiary'>글 쓰기</Link>
                 </div>
-                <div>
-                    <ul>
-                        {
-                            this.state.memos.map((memo, i) => {
-                                return(
-                                    <li>
-                                        <Link to={`/detail/${memo.id}`} params={{id: memo.id}}>
-                                            {memo.memoTitle}
-                                        </Link>
-                                    </li>
-                                    
-                                )
-                            })
-                        }
-                    </ul>
-                </div>
+                <Fragment>
+                    {
+                        this.state.memos.map((memo, i) => {
+                            return(
+                                <MyLi
+                                    memoTitle = {memo.memoTitle}
+                                    memoContent = {memo.memoContent}
+                                    published = {memo.published}
+                                />
+                            )
+                            {
+                                //<Link to={`/detail/${memo.id}`} params={{id: memo.id}} />
+                            }
+                        })
+                    }
+                </Fragment>
             </div>
         )
     }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 import {encodeToWs, decodeFromWs} from '../lib/websocket';
+import MyLi from '../components/MyLi';
 
 class SaveDiary extends Component {
     state = {
@@ -97,7 +98,13 @@ class SaveDiary extends Component {
                     {
                         this.state.memos.map((memo, idx) => {
                             return (
-                                <li key={idx} data-idx={idx} onClick={this.memoClicked}>{idx} {memo.memoTitle} {memo.published}</li>
+                                <li key={idx} data-idx={idx} onClick={this.memoClicked}>
+                                    <MyLi
+                                        memoTitle = {memo.memoTitle}
+                                        memoContent = {memo.memoContent}
+                                        published = {memo.published}
+                                    />
+                                </li>
                             )
                         })
                     }
