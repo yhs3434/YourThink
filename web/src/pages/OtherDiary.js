@@ -77,7 +77,7 @@ class OtherDiary extends Component {
 
     render() {
         return(
-            <div className="otherDiaryWrap">
+            <div className="diaryPage">
                 <div>
                     <h3>제목</h3>
                     <pre>{this.state.memoTitle}</pre>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './css/MyDiary.css';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {Link} from "react-router-dom";
+import myLi from '../components/myLi';
 
 class MyDiary extends Component {
     state = {
@@ -37,7 +38,7 @@ class MyDiary extends Component {
         return(
             <div className="myDiaryWrap">
                 <div>
-                    <Link to='/writeDiary'>글 쓰기</Link>
+                    <Link className="button-common" to='/writeDiary'>글 쓰기</Link>
                 </div>
                 <div>
                     <ul>
@@ -46,9 +47,10 @@ class MyDiary extends Component {
                                 return(
                                     <li>
                                         <Link to={`/detail/${memo.id}`} params={{id: memo.id}}>
-                                            {memo.memoTitle} {memo.published}
+                                            {memo.memoTitle}
                                         </Link>
                                     </li>
+                                    
                                 )
                             })
                         }

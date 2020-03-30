@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 import Oauth from '../components/oauth.js';
@@ -166,7 +166,7 @@ class DetailDiary extends Component {
     render() {
         const style = {
             wrap: {
-
+                
             },
             titleWrap: {
                 display: 'flex',
@@ -183,8 +183,8 @@ class DetailDiary extends Component {
         }
 
         return (
-            <div>
-                <div style={style.wrap}>
+            <Fragment>
+                <div style={style.wrap} className="diaryPage">
                     <div>
                         <h3>제목</h3>
                         <pre>{this.state.memoTitle}</pre>
@@ -211,7 +211,7 @@ class DetailDiary extends Component {
                         setKakaoId={this.props.setKakaoId}
                     />
                 </div>
-            </div>
+            </Fragment>
         )
     }
 }
