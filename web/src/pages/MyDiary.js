@@ -3,6 +3,7 @@ import './css/MyDiary.css';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {Link} from "react-router-dom";
 import MyLi from '../components/MyLi';
+import {withRouter} from 'react-router-dom';
 
 class MyDiary extends Component {
     state = {
@@ -34,11 +35,17 @@ class MyDiary extends Component {
         }
     }
 
+    memoClicked = (event) => {
+        const memo = this.state.memos[event.currentTarget.dataset.idx];
+        const {setMemoTitle, setMemoContent, setPublished} = this.props;
+        setMemoTitle(memo.memoTitle);
+        setMemoContent(memo.memoContent);
+        setPublished(memo.published);
+        this.props.history.push('./detail');
+    }
+
     render() {
         const style = {
-            ul: {
-                width: '100%'
-            }
         }
         return(
             <div className="myDiaryWrap">
@@ -47,17 +54,16 @@ class MyDiary extends Component {
                 </div>
                 <Fragment>
                     {
-                        this.state.memos.map((memo, i) => {
+                        this.state.memos.map((memo, idx) => {
                             return(
-                                <MyLi
-                                    memoTitle = {memo.memoTitle}
-                                    memoContent = {memo.memoContent}
-                                    published = {memo.published}
-                                />
+                                <div key={idx} data-idx={idx} onClick={this.memoClicked}>
+                                    <MyLi
+                                        memoTitle = {memo.memoTitle}
+                                        memoContent = {memo.memoContent}
+                                        published = {memo.published}
+                                    />
+                                </div>
                             )
-                            {
-                                //<Link to={`/detail/${memo.id}`} params={{id: memo.id}} />
-                            }
                         })
                     }
                 </Fragment>
@@ -66,4 +72,4 @@ class MyDiary extends Component {
     }
 }
 
-export default MyDiary;
+export default withRouter(MyDiary);

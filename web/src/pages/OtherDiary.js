@@ -76,14 +76,16 @@ class OtherDiary extends Component {
     }
 
     render() {
+        const style = {
+            diaryPage: {
+                height: String(window.innerHeight-142)+"px"
+            }
+        }
         return(
-            <div className="diaryPage">
+            <div className="diaryPage" style={style.diaryPage}>
                 <div>
-                    <h3>제목</h3>
                     <pre>{this.state.memoTitle}</pre>
-                    <h3>내용</h3>
                     <pre>{this.state.memoContent}</pre>
-                    <h3>날짜</h3>
                     <pre>{this.state.published}</pre>
                 </div>
                 <button onClick={this.getDiary}>가져오기</button>

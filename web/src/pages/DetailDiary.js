@@ -5,38 +5,9 @@ import Oauth from '../components/oauth.js';
 
 class DetailDiary extends Component {
     state = {
-        memoTitle: undefined,
-        memoContent: undefined,
-        published: undefined,
-        
         memoId: undefined,
 
-        modalOauth: false,
-    }
-
-    async componentDidMount() {
-        const id = Number(this.props.match.params.id);
-        this.setState({
-            memoId: id
-        });
-        
-        const db = await openDB();
-        let objectStore = getObjectStore(db, 'readonly');
-        let request = objectStore.get(id);
-        request.onerror = (event) => {
-            console.log('가져오기 실패');
-        }
-        request.onsuccess = (event) => {
-            console.log('가져오기 성공');
-            //console.log(request.result);
-            if (Boolean(request.result)) {
-                this.setState({
-                    memoTitle: request.result.memoTitle,
-                    memoContent: request.result.memoContent,
-                    published: request.result.published
-                });
-            }
-        }
+        modalOauth: false
     }
 
     modalOpen = (event) => {
@@ -164,6 +135,7 @@ class DetailDiary extends Component {
     }
 
     render() {
+        console.log(window.innerHeight);
         const style = {
             wrap: {
                 
@@ -179,19 +151,19 @@ class DetailDiary extends Component {
             title: {
                 alignSelf: 'center',
                 fontSize: 20
+            },
+            diaryPage: {
+                height: String(window.innerHeight-142)+"px"
             }
         }
 
         return (
             <Fragment>
-                <div style={style.wrap} className="diaryPage">
+                <div style={style.wrap} className="diaryPage" style={style.diaryPage}>
                     <div>
-                        <h3>제목</h3>
-                        <pre>{this.state.memoTitle}</pre>
-                        <h3>내용</h3>
-                        <pre>{this.state.memoContent}</pre>
-                        <h3>날짜</h3>
-                        <pre>{this.state.published}</pre>
+                        <pre>{this.props.memoTitle}</pre>
+                        <pre>{this.props.memoContent}</pre>
+                        <pre>{this.props.published}</pre>
                     </div>
                     <div>
                         <button onClick={this.publicButtonClicked}>공개</button>

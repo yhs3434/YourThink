@@ -94,21 +94,19 @@ class SaveDiary extends Component {
     render() {
         return (
             <div>
-                <ul>
-                    {
-                        this.state.memos.map((memo, idx) => {
-                            return (
-                                <li key={idx} data-idx={idx} onClick={this.memoClicked}>
-                                    <MyLi
-                                        memoTitle = {memo.memoTitle}
-                                        memoContent = {memo.memoContent}
-                                        published = {memo.published}
-                                    />
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
+            {
+                this.state.memos.map((memo, idx) => {
+                    return (
+                        <div key={idx} data-idx={idx} onClick={this.memoClicked}>
+                            <MyLi
+                                memoTitle = {memo.memoTitle}
+                                memoContent = {memo.memoContent}
+                                published = {memo.published}
+                            />
+                        </div>
+                    )
+                })
+            }
             </div>
         )
     }

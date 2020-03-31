@@ -5,14 +5,15 @@ const MyLi = ({memoTitle, memoContent, published}) => {
         wrap: {
             display: 'flex',
             flexDirection: 'column',
-            width: '100%'
         }
     }
     return (
         <div className="li-common" style={style.wrap}>
-            <span>{memoTitle}</span>
-            <span>{memoContent}</span>
-            <span>{published}</span>
+            <span className="li-memoTitle">{memoTitle}</span>
+            <div>
+                <span className="li-memoContent">{memoContent}</span>
+                <span className="li-published">{published}</span>
+            </div>
         </div>
     )
 }

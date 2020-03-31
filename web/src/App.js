@@ -99,14 +99,21 @@ function App() {
               <WriteDiary logged={logged}/>
             </Route>
             <Route path = "/my">
-              <MyDiary />
+              <MyDiary 
+                setMemoTitle={setMemoTitle}
+                setMemoContent={setMemoContent}
+                setPublished={setPublished}
+              />
             </Route>
             <Route path = "/other">
               <OtherDiary />
             </Route>
-            <Route name="detailPage" path = "/detail/:id">
+            <Route name="detailPage" path = "/detail">
               <DetailDiary 
                 setKakaoId={setKakaoId}
+                memoTitle={memoTitle}
+                memoContent={memoContent}
+                published={published}
               />
             </Route>
             <Route path="/modify/:id" component={ModifyDiary}/>
