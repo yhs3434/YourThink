@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './css/WriteDiary.css';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
+import {convertDatetime} from '../lib/datetime';
 
 class WriteDiary extends Component {
     state = {
@@ -24,7 +25,7 @@ class WriteDiary extends Component {
         const obj = {
             memoTitle: this.state.memoTitle,
             memoContent: this.state.memoContent,
-            published: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            published: convertDatetime('init')
         };
         const db = await openDB();
         const objectStore = getObjectStore(db, 'readwrite');
@@ -44,9 +45,17 @@ class WriteDiary extends Component {
     }
 
     render() {
+        const style = {
+            p: {
+                marginTop: '2rem',
+                marginBottom: '2rem'
+            }
+        }
         return(
             <form className="writeDiaryWrap" onSubmit={this.handleSubmit}>
-                This is Write Diary page.
+                <p style={style.p}>
+                    지금 이 순간 당신의 생각을 적어주세요
+                </p>
                 <input
                     className="writeDiaryTitle"
                     name="memoTitle"

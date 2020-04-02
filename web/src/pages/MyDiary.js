@@ -25,9 +25,9 @@ class MyDiary extends Component {
             if (cursor) {
                 req = objectStore.get(cursor.key);
                 req.onsuccess = function (evt) {
-                    const value = evt.target.result;
+                    const memo = evt.target.result;
                     superthis.setState({
-                        memos: superthis.state.memos.concat(value)
+                        memos: [memo, ...superthis.state.memos]
                     });
                 }
                 cursor.continue();
@@ -37,11 +37,16 @@ class MyDiary extends Component {
 
     memoClicked = (event) => {
         const memo = this.state.memos[event.currentTarget.dataset.idx];
-        const {setMemoTitle, setMemoContent, setPublished} = this.props;
+        const {setMemoId, setMemoTitle, setMemoContent, setPublished} = this.props;
+        setMemoId(memo.id);
         setMemoTitle(memo.memoTitle);
         setMemoContent(memo.memoContent);
         setPublished(memo.published);
         this.props.history.push('./detail');
+    }
+
+    writeButtonClicked = (event) => {
+        this.props.history.push('/writeDiary');
     }
 
     render() {
@@ -50,9 +55,9 @@ class MyDiary extends Component {
         return(
             <div className="myDiaryWrap">
                 <div>
-                    <Link className="button-common" to='/writeDiary'>글 쓰기</Link>
+                    <button className="button-write" onClick={this.writeButtonClicked}>글 쓰기</button>
                 </div>
-                <Fragment>
+                <div className="li-list">
                     {
                         this.state.memos.map((memo, idx) => {
                             return(
@@ -66,7 +71,7 @@ class MyDiary extends Component {
                             )
                         })
                     }
-                </Fragment>
+                </div>
             </div>
         )
     }

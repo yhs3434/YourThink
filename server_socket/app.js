@@ -89,9 +89,10 @@ wss.on('connection', function connection(ws, req) {
             const token = `${platform}${userId}`;
             console.log('token', token);
             const query = `
-                SELECT memoTitle, memoContent, published 
+                SELECT memoTitle, memoContent, published, saved
                 FROM memo 
-                WHERE memoId LIKE "${token}%";
+                WHERE memoId LIKE "${token}%" 
+                ORDER BY saved ASC;
             `
             conn.query(query, (err, rows, fields) => {
                 for (let row of rows) {
@@ -103,9 +104,10 @@ wss.on('connection', function connection(ws, req) {
             const {userId, platform} = payload;
             const token = `${platform}${userId}`;
             const query = `
-                SELECT memoTitle, memoContent, published
+                SELECT memoTitle, memoContent, published, saved
                 FROM public_save 
-                WHERE memoId LIKE "${token}%";
+                WHERE memoId LIKE "${token}%"
+                ORDER BY saved ASC;
             `;
             conn.query(query, (err, rows, fields) => {
                 for (let row of rows) {

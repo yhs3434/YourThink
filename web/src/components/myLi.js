@@ -9,10 +9,12 @@ const MyLi = ({memoTitle, memoContent, published}) => {
     }
     return (
         <div className="li-common" style={style.wrap}>
-            <span className="li-memoTitle">{memoTitle}</span>
             <div>
-                <span className="li-memoContent">{memoContent}</span>
-                <span className="li-published">{published}</span>
+                <div className="li-memoTitle">{memoTitle}</div>
+            </div>
+            <div>
+                <div className="li-memoContent">{memoContent}</div>
+                <div className="li-published">{published}</div>
             </div>
         </div>
     )

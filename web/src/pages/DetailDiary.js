@@ -25,10 +25,10 @@ class DetailDiary extends Component {
     deleteButtonClicked = async (event) => {
         const result = window.confirm("정말 삭제 하시겠습니까?");
         const superthis = this;
-        if (Boolean(this.state.memoTitle) && result) {
+        if (result && Boolean(this.props.memoTitle)) {
             const db = await openDB();
             let objectStore = getObjectStore(db, 'readwrite');
-            let request = objectStore.delete(this.state.memoId);
+            let request = objectStore.delete(this.props.memoId);
             request.onsuccess = function(event) {
                 superthis.props.history.replace('/my');
                 console.log('delete success');
@@ -44,8 +44,8 @@ class DetailDiary extends Component {
     modifyButtonClicked = (event) => {
         const result = window.confirm("수정 하시겠습니까?");
         
-        if (Boolean(this.state.memoTitle) && result) {
-            this.props.history.replace(`/modify/${this.state.memoId}`);
+        if (result && Boolean(this.props.memoTitle)) {
+            this.props.history.replace(`/modify/${this.props.memoId}`);
         } else {
             console.log('not modify');
         }
@@ -58,8 +58,8 @@ class DetailDiary extends Component {
             return
         }
 
-        if (Boolean(this.state.memoTitle) && Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`])) {
-            const id = Number(this.props.match.params.id);
+        if (Boolean(this.props.memoTitle) && Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`])) {
+            const id = Number(this.props.memoId);
             const userId = sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`];
             const platform = sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`];
             const db = await openDB();
@@ -105,7 +105,7 @@ class DetailDiary extends Component {
         console.log('공개');
         const db = await openDB();
         const objectStore = getObjectStore(db, 'readonly');
-        const request = objectStore.get(this.state.memoId);
+        const request = objectStore.get(this.props.memoId);
         request.onsuccess = (event) => {
             const {memoTitle, memoContent, published} = request.result;
             const obj = {
@@ -135,7 +135,6 @@ class DetailDiary extends Component {
     }
 
     render() {
-        console.log(window.innerHeight);
         const style = {
             wrap: {
                 
@@ -153,7 +152,7 @@ class DetailDiary extends Component {
                 fontSize: 20
             },
             diaryPage: {
-                height: String(window.innerHeight-142)+"px"
+                minHeight: String(window.innerHeight-142)+"px"
             }
         }
 
@@ -161,9 +160,9 @@ class DetailDiary extends Component {
             <Fragment>
                 <div style={style.wrap} className="diaryPage" style={style.diaryPage}>
                     <div>
-                        <pre>{this.props.memoTitle}</pre>
-                        <pre>{this.props.memoContent}</pre>
-                        <pre>{this.props.published}</pre>
+                        <pre className="diary-memoTitle">{this.props.memoTitle}</pre>
+                        <pre className="diary-memoContent">{this.props.memoContent}</pre>
+                        <pre className="diary-published">{this.props.published}</pre>
                     </div>
                     <div>
                         <button onClick={this.publicButtonClicked}>공개</button>

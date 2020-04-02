@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 import {encodeToWs, decodeFromWs} from '../lib/websocket';
 import MyLi from '../components/MyLi';
+import {convertDatetime} from '../lib/datetime';
 
 class SaveDiary extends Component {
     state = {
@@ -43,7 +44,11 @@ class SaveDiary extends Component {
                     console.log('close');
                     ws.close();
                 } else {
-                    let memo = data
+                    let memo = {
+                        memoTitle: data.memoTitle,
+                        memoContent: data.memoContent,
+                        published: convertDatetime(data.published)
+                    };
                     this.setState({
                         memos: [memo ,...this.state.memos]
                     });
@@ -73,7 +78,11 @@ class SaveDiary extends Component {
                     console.log('close');
                     ws.close();
                 } else {
-                    let memo = data;
+                    let memo = {
+                        memoTitle: data.memoTitle,
+                        memoContent: data.memoContent,
+                        published: convertDatetime(data.published)
+                    };
                     this.setState({
                         memos: [memo, ...this.state.memos]
                     });
@@ -93,7 +102,7 @@ class SaveDiary extends Component {
 
     render() {
         return (
-            <div>
+            <div className="li-list">
             {
                 this.state.memos.map((memo, idx) => {
                     return (

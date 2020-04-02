@@ -24,6 +24,7 @@ function App() {
   const [accessToken, setAccessToken] = useState('');
   const [userId, setUserId] = useState(null);
 
+  const [memoId, setMemoId] = useState(null);
   const [memoTitle, setMemoTitle] = useState(null);
   const [memoContent, setMemoContent] = useState(null);
   const [published, setPublished] = useState(null);
@@ -100,6 +101,7 @@ function App() {
             </Route>
             <Route path = "/my">
               <MyDiary 
+                setMemoId={setMemoId}
                 setMemoTitle={setMemoTitle}
                 setMemoContent={setMemoContent}
                 setPublished={setPublished}
@@ -111,6 +113,7 @@ function App() {
             <Route name="detailPage" path = "/detail">
               <DetailDiary 
                 setKakaoId={setKakaoId}
+                memoId={memoId}
                 memoTitle={memoTitle}
                 memoContent={memoContent}
                 published={published}
@@ -130,7 +133,7 @@ function App() {
               <SaveDiary setMemoTitle={setMemoTitle} setMemoContent={setMemoContent} setPublished={setPublished}/>
             </Route>
             <Route path="/detailyours">
-              <DetailYours memoTitle={memoTitle} memoContent={memoContent} published={published}/>
+              <DetailYours memoId={memoId} memoTitle={memoTitle} memoContent={memoContent} published={published}/>
             </Route>
             <Route path="/redirect/:page/:mode">
               <Redirect/>

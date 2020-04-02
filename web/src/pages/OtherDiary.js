@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './css/OtherDiary.css';
 import {encodeToWs, decodeFromWs} from '../lib/websocket';
 import {datetimeToMysql} from '../lib/mysql';
+import {convertDatetime} from '../lib/datetime';
 
 class OtherDiary extends Component {
     state = {
@@ -24,8 +25,9 @@ class OtherDiary extends Component {
                 if (event.data === "close") {
                     ws.close();
                 } else {
-                    const data = JSON.parse(unescape(event.data));
-                    const {memoTitle, memoContent, published} = data;
+                    const data = decodeFromWs(event.data);
+                    let {memoTitle, memoContent, published} = data;
+                    published = convertDatetime(published);
                     this.setState({
                         memoTitle, memoContent, published
                     });
@@ -78,15 +80,15 @@ class OtherDiary extends Component {
     render() {
         const style = {
             diaryPage: {
-                height: String(window.innerHeight-142)+"px"
+                minHeight: String(window.innerHeight-142)+"px"
             }
         }
         return(
             <div className="diaryPage" style={style.diaryPage}>
                 <div>
-                    <pre>{this.state.memoTitle}</pre>
-                    <pre>{this.state.memoContent}</pre>
-                    <pre>{this.state.published}</pre>
+                    <pre className="diary-memoTitle">{this.state.memoTitle}</pre>
+                    <pre className="diary-memoContent">{this.state.memoContent}</pre>
+                    <pre className="diary-published">{this.state.published}</pre>
                 </div>
                 <button onClick={this.getDiary}>가져오기</button>
                 <button onClick={this.saveButtonClicked}>저장</button>

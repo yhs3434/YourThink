@@ -96,10 +96,10 @@
   align-items: center;
   width: 90%;
   max-width: 1000px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  padding-left: 15px;
+  padding-right: 15px;
   border-radius: 0px;
   background: #ffffff;
   box-shadow:  3px 3px 7px #b3b3b3, 
@@ -123,6 +123,12 @@ a {
   background: linear-gradient(145deg, #11abee, #0e90c8);
 }
 
+.li-list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
 .li-common {
   border-radius: 0px;
   background: #ffffff;
@@ -136,10 +142,57 @@ a {
   background: linear-gradient(145deg, #ffffff, #d9e1e5);
 }
 
+.li-memoTitle {
+  max-width: 290px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.li-memoContent {
+  font-size: 13px;
+  max-width: 290px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.li-published {
+  max-width: 290px;
+  font-size: 13px;
+  color: gray;
+}
+
+
+pre {
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
 .myDiaryWrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 90%;
   max-width: 600px;
+}
+
+.diary-memoTitle {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.diary-memoContent {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.diary-published {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
 }

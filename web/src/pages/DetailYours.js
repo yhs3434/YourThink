@@ -5,15 +5,15 @@ class DetailYours extends Component {
     render() {
         const style = {
             diaryPage: {
-                height: String(window.innerHeight-142)+"px"
+                minHeight: String(window.innerHeight-142)+"px"
             }
         }
         return (
             <div className="diaryPage" style={style.diaryPage}>
                 <div>
-                    <pre>{this.props.memoTitle}</pre>
-                    <pre>{this.props.memoContent}</pre>
-                    <pre>{this.props.published}</pre>
+                    <pre className="diary-memoTitle">{this.props.memoTitle}</pre>
+                    <pre className="diary-memoContent">{this.props.memoContent}</pre>
+                    <pre className="diary-published">{this.props.published}</pre>
                 </div>
             </div>
         )
