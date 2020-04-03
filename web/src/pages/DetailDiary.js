@@ -66,8 +66,8 @@ class DetailDiary extends Component {
             let objectStore = getObjectStore(db, 'readonly');
             let request = objectStore.get(id);
             request.onsuccess = (event) => {
-                const {memoTitle, memoContent, published} = request.result;
-                const memoId = `${platform}${userId}_${published}`;
+                const {memoTitle, memoContent, published, modified} = request.result;
+                const memoId = `${platform}${userId}_${modified}`;
                 const obj = {
                     memoId, memoTitle, memoContent, published
                 };
@@ -107,9 +107,9 @@ class DetailDiary extends Component {
         const objectStore = getObjectStore(db, 'readonly');
         const request = objectStore.get(this.props.memoId);
         request.onsuccess = (event) => {
-            const {memoTitle, memoContent, published} = request.result;
+            const {memoTitle, memoContent, published, modified} = request.result;
             const obj = {
-                memoTitle, memoContent, published
+                memoTitle, memoContent, published, modified
             };
             const message = {
                 type: 'public',

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
+import {convertDatetime} from '../lib/datetime';
 
 class ModifyDiary extends Component {
     state = {
@@ -56,6 +57,7 @@ class ModifyDiary extends Component {
             let data = event.target.result;
             data.memoTitle = this.state.memoTitle;
             data.memoContent = this.state.memoContent;
+            data.modified = convertDatetime('init');
 
             let requestUpdate = objectStore.put(data);
             requestUpdate.onerror = function(event) {

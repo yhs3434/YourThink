@@ -4,14 +4,23 @@ import {openDB, getObjectStore} from '../lib/indexeddb';
 import {Link} from "react-router-dom";
 import MyLi from '../components/MyLi';
 import {withRouter} from 'react-router-dom';
+import {moreAuto} from '../lib/scroll';
 
 class MyDiary extends Component {
     state = {
-        memos: []
+        memos: [],
+        memoOffset: 5,
+        delim: 5
     }
 
     async componentDidMount() {
         this.getAllData();
+        moreAuto(this.moreButtonClicked);
+        window.addEventListener('scroll', this.onScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScroll);
     }
 
     getAllData = async () => {
@@ -49,6 +58,16 @@ class MyDiary extends Component {
         this.props.history.push('/writeDiary');
     }
 
+    moreButtonClicked = (event) => {
+        this.setState({
+            memoOffset: this.state.memoOffset + this.state.delim
+        });
+    }
+
+    onScroll = (event) => {
+        moreAuto(this.moreButtonClicked);
+    }
+
     render() {
         const style = {
         }
@@ -59,7 +78,7 @@ class MyDiary extends Component {
                 </div>
                 <div className="li-list">
                     {
-                        this.state.memos.map((memo, idx) => {
+                        this.state.memos.slice(0, this.state.memoOffset).map((memo, idx) => {
                             return(
                                 <div key={idx} data-idx={idx} onClick={this.memoClicked}>
                                     <MyLi
@@ -71,6 +90,9 @@ class MyDiary extends Component {
                             )
                         })
                     }
+                </div>
+                <div>
+                    <button onClick={this.moreButtonClicked}>더 보기</button>
                 </div>
             </div>
         )

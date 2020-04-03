@@ -25,7 +25,8 @@ class WriteDiary extends Component {
         const obj = {
             memoTitle: this.state.memoTitle,
             memoContent: this.state.memoContent,
-            published: convertDatetime('init')
+            published: convertDatetime('init'),
+            modified: convertDatetime('init')
         };
         const db = await openDB();
         const objectStore = getObjectStore(db, 'readwrite');

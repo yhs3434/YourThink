@@ -8,7 +8,8 @@ class OtherDiary extends Component {
     state = {
         memoTitle: null,
         memoContent: null,
-        published: null
+        published: null,
+        modified: null
     }
 
     getDiary = () => {
@@ -26,11 +27,14 @@ class OtherDiary extends Component {
                     ws.close();
                 } else {
                     const data = decodeFromWs(event.data);
-                    let {memoTitle, memoContent, published} = data;
+                    let {memoTitle, memoContent, published, modified} = data;
                     published = convertDatetime(published);
+                    modified = convertDatetime(modified);
                     this.setState({
-                        memoTitle, memoContent, published
+                        memoTitle, memoContent, published, modified
                     });
+                    console.log('published', published);
+                    console.log('modified', modified);
                 }
             }
             ws.onerror = (event) => {
@@ -45,7 +49,7 @@ class OtherDiary extends Component {
             return;
         }
 
-        const {memoTitle, memoContent, published} = this.state;
+        const {memoTitle, memoContent, published, modified} = this.state;
         if (published === null) {
             alert('글이 있어야 합니다.');
             return;
@@ -53,7 +57,7 @@ class OtherDiary extends Component {
         
         const userId = sessionStorage[`${process.env.REACT_APP_APP_NAME}.userId`];
         const platform = sessionStorage[`${process.env.REACT_APP_APP_NAME}.platform`];
-        const memoId = `${platform}${userId}_${published}`;
+        const memoId = `${platform}${userId}_${modified}`;
 
         const message = {
             type: 'saveYours',

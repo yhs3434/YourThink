@@ -55,12 +55,11 @@ wss.on('connection', function connection(ws, req) {
                 }
             })
         } else if (type === 'public') {
-            console.log('public payload', payload);
-            const {memoTitle, memoContent, published} = payload;
+            const {memoTitle, memoContent, published, modified} = payload;
             const query = `
-                INSERT INTO public_memo SET memoTitle = ?, memoContent = ?, published = ?
+                INSERT INTO public_memo SET memoTitle = ?, memoContent = ?, published = ?, modified = ?
             `
-            conn.query(query, [memoTitle, memoContent, published], (err, rows, fields) => {
+            conn.query(query, [memoTitle, memoContent, published, modified], (err, rows, fields) => {
                 if (!err) {
                     ws.send('success');
                 } else {
@@ -71,7 +70,7 @@ wss.on('connection', function connection(ws, req) {
         } else if (type === 'publicGet') {
             const weekOffset = 4;
             const query = `
-                SELECT * from (SELECT memoTitle, memoContent, published FROM public_memo
+                SELECT * from (SELECT memoTitle, memoContent, published, modified FROM public_memo
                      WHERE publiced BETWEEN date_add(now(), interval -${weekOffset} week) and now()
                     ) as m;
             `;

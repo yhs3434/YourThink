@@ -3,10 +3,13 @@ import {withRouter} from 'react-router-dom';
 import {encodeToWs, decodeFromWs} from '../lib/websocket';
 import MyLi from '../components/MyLi';
 import {convertDatetime} from '../lib/datetime';
+import {moreAuto} from '../lib/scroll';
 
 class SaveDiary extends Component {
     state = {
-        memos: []
+        memos: [],
+        memoOffset: 5,
+        delim: 5
     }
 
     componentDidMount() {
@@ -21,6 +24,12 @@ class SaveDiary extends Component {
                 this.getYours();
             }
         }
+        moreAuto(this.moreButtonClicked);
+        window.addEventListener('scroll', this.onScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScroll);
     }
 
     getMine = () => {
@@ -100,22 +109,37 @@ class SaveDiary extends Component {
         this.props.history.push('/detailyours');
     }
 
+    moreButtonClicked = (event) => {
+        this.setState({
+            memoOffset: this.state.memoOffset + this.state.delim
+        });
+    }
+
+    onScroll = (event) => {
+        moreAuto(this.moreButtonClicked);
+    }
+
     render() {
         return (
-            <div className="li-list">
-            {
-                this.state.memos.map((memo, idx) => {
-                    return (
-                        <div key={idx} data-idx={idx} onClick={this.memoClicked}>
-                            <MyLi
-                                memoTitle = {memo.memoTitle}
-                                memoContent = {memo.memoContent}
-                                published = {memo.published}
-                            />
-                        </div>
-                    )
-                })
-            }
+            <div>
+                <div className="li-list">
+                {
+                    this.state.memos.slice(0, this.state.memoOffset).map((memo, idx) => {
+                        return (
+                            <div key={idx} data-idx={idx} onClick={this.memoClicked}>
+                                <MyLi
+                                    memoTitle = {memo.memoTitle}
+                                    memoContent = {memo.memoContent}
+                                    published = {memo.published}
+                                />
+                            </div>
+                        )
+                    })
+                }
+                </div>
+                <div>
+                    <button onClick={this.moreButtonClicked}>더 보기</button>
+                </div>
             </div>
         )
     }
