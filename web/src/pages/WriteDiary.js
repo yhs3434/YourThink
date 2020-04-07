@@ -7,10 +7,30 @@ import {convertDatetime} from '../lib/datetime';
 class WriteDiary extends Component {
     state = {
         memoTitle: '',
-        memoContent: ''
+        memoContent: '',
+        autoSaveInterval: null
     }
     
-    async componentDidMount() {
+    componentDidMount() {
+        if (this.isAutoSave()) {
+            const result = window.confirm(`작성 중이던 글이 존재합니다.
+계속 작성 하시겠습니까?
+            `);
+            if (result) {
+                this.setState(this.getAutoSave());
+            } else {
+                this.autoSaveRemove();
+            }
+        }
+        const autoSaveInterval = window.setInterval(this.autoSave, 5000);
+        this.setState({
+            autoSaveInterval: autoSaveInterval
+        });
+    }
+
+    componentWillUnmount() {
+        window.clearInterval(this.state.autoSaveInterval);
+        this.setState({autoSaveInterval: null});
     }
 
     handleChange = (event) => {
@@ -36,13 +56,43 @@ class WriteDiary extends Component {
             
         } catch (e) {}
         req.onsuccess = (evt) => {
+            this.autoSaveRemove();
             superthis.props.history.replace('/my');
             console.log('입력 완료');
         }
         req.onerror = () => {
             console.error(this.error);
         }
-        
+    }
+
+    autoSave = (event) => {
+        if (this.state.memoTitle) {
+            window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoTitle`] = this.state.memoTitle;
+        }
+        if (this.state.memoContent) {
+            window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoContent`] = this.state.memoContent;
+        }
+    }
+
+    autoSaveRemove = (event) => {
+        window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoTitle`] = '';
+        window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoContent`] = '';
+    }
+
+    getAutoSave = (event) => {
+        const obj = {
+            memoTitle: window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoTitle`],
+            memoContent: window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoContent`]
+        };
+        return obj;
+    }
+
+    isAutoSave = (event) => {
+        if (Boolean(window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoTitle`]) || Boolean(window.localStorage[`${process.env.REACT_APP_APP_NAME}.auto.memoContent`])){
+            return true
+        } else {
+            return false
+        }
     }
 
     render() {
