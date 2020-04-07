@@ -123,6 +123,10 @@ a {
   background: linear-gradient(145deg, #11abee, #0e90c8);
 }
 
+ul {
+  list-style: none;
+}
+
 .li-list {
   display: flex;
   flex-direction: column;
@@ -136,6 +140,7 @@ a {
               -2px -2px 7px #ffffff;
   padding: 1rem;
   margin-top: 0.7rem;
+  margin-bottom: 0.7rem;
 }
 
 .li-common:hover {
@@ -149,6 +154,7 @@ a {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin: 5px;
 }
 
 .li-memoContent {
@@ -157,12 +163,14 @@ a {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin: 5px;
 }
 
 .li-published {
   max-width: 290px;
   font-size: 13px;
   color: gray;
+  margin: 5px;
 }
 
 
@@ -182,20 +190,41 @@ pre {
 .diary-memoTitle {
   font-weight: bold;
   font-size: 20px;
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
+  margin-top: 4rem;
+  margin-bottom: 5rem;
   display: flex;
   justify-content: center;
+  font-family: 'Roboto';
 }
 
 .diary-memoContent {
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
+  margin-top: 4rem;
+  margin-bottom: 5rem;
+  font-family: 'Roboto';
 }
 
 .diary-published {
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
+  margin-top: 4rem;
+  margin-bottom: 5rem;
   display: flex;
   justify-content: center;
+}
+
+button {
+  background: #6200ee;
+  border: 0;
+  color: white;
+  font-size: 14px;
+  font-family: 'Roboto';
+  font-weight: 500;
+  min-width: 64px;
+  min-height: 36px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 4px;
+  box-shadow: 2px 2px 7px #b3b3b3;
+}
+
+button:hover{
+  background: #8035e9;
 }

@@ -137,9 +137,13 @@ class SaveDiary extends Component {
                     })
                 }
                 </div>
-                <div>
-                    <button onClick={this.moreButtonClicked}>더 보기</button>
-                </div>
+                {
+                    /*
+                    <div>
+                        <button onClick={this.moreButtonClicked}>더 보기</button>
+                    </div>
+                    */
+                }
             </div>
         )
     }

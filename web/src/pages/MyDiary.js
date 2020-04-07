@@ -70,11 +70,17 @@ class MyDiary extends Component {
 
     render() {
         const style = {
+            btnWrite: {
+                marginTop: '20px',
+                marginBottom: '20px'
+            }
         }
         return(
             <div className="myDiaryWrap">
                 <div>
-                    <button className="button-write" onClick={this.writeButtonClicked}>글 쓰기</button>
+                    <button className="button-write" onClick={this.writeButtonClicked}
+                        style={style.btnWrite}
+                    >글 쓰기</button>
                 </div>
                 <div className="li-list">
                     {
@@ -91,9 +97,12 @@ class MyDiary extends Component {
                         })
                     }
                 </div>
-                <div>
-                    <button onClick={this.moreButtonClicked}>더 보기</button>
-                </div>
+                {   /*
+                    <div>
+                        <button onClick={this.moreButtonClicked}>더 보기</button>
+                    </div>
+                    */
+                }
             </div>
         )
     }

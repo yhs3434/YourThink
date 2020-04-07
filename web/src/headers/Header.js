@@ -6,38 +6,75 @@ import {Link, withRouter} from 'react-router-dom';
 
 class Header extends Component {
     state = {
-        myMemuClick: false
+        myMenuClick: false
+    }
+
+    componentDidMount() {
     }
 
     getUserInfo = async () => {
         // 유저데이터 불러오기
     };
 
-    // 메뉴 펼치기, 접기
     myMenuClicked = (event) => {
+        if (this.state.myMenuClick === false) {
+            this.setState({
+                myMenuClick: true
+            });
+        }
+        else {
+            this.setState({
+                myMenuClick: false
+            });
+        }
+    }
+
+    // 메뉴 펼치기, 접기
+    myMenuClickedOpen = (event) => {
         this.setState({
-            myMemuClick: !this.state.myMemuClick
+            myMenuClick: true
+        })
+    }
+
+    myMenuClickedClose = (event) => {
+        this.setState({
+            myMenuClick: false
         })
     }
 
     saveMineClicked = (event) => {
         this.props.history.push('/redirect/save/mine');
-        this.myMenuClicked();
+        this.myMenuClickedClose();
     }
 
     saveYoursClicked = (event) => {
         this.props.history.push('/redirect/save/yours');
-        this.myMenuClicked();
+        this.myMenuClickedClose();
     }
 
     render () {
+        if (Boolean(document.getElementById('mymenu'))) {
+            let mymenu = document.getElementById('mymenu');
+            mymenu.addEventListener('click', this.stopEvent);
+        }
         const style = {
+            my: {
+                cursor: 'pointer'
+            },
             myMenu: {
                 position: 'absolute',
                 top: '3rem',
                 right: '0rem',
                 width: '250px',
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                boxShadow: '2px 2px 7px #b3b3b3'
+            },
+            myMenuLi: {
+                cursor: 'pointer',
+            },
+            myMenuUl: {
+                lineHeight: '34px',
+                fontSize: '18px'
             },
             myMenuHidden: {
                 display: 'none'
@@ -63,13 +100,13 @@ class Header extends Component {
                         <div style={style.headerRightRight}> 
                             <NotificationIcon height='20px' width='20px' />
                             <div style={{position: 'relative'}}>
-                                <span onClick={this.myMenuClicked}>사진</span>
-                                <div style={this.state.myMemuClick?style.myMenu:style.myMenuHidden}>
-                                    <ul>
-                                        <li><span onClick={this.saveMineClicked}>저장한 나의 글</span></li>
-                                        <li><span onClick={this.saveYoursClicked}>저장한 너의 글</span></li>
-                                        <li>고객센터</li>
-                                        <li><span onClick={this.props.logOut}>로그아웃</span></li>
+                                <div onClick={this.myMenuClicked} style={style.my}>사진</div>
+                                <div style={this.state.myMenuClick?style.myMenu:style.myMenuHidden} id='mymenu'>
+                                    <ul style={style.myMenuUl}>
+                                        <li><span onClick={this.saveMineClicked} style={style.myMenuLi}>저장한 나의 글</span></li>
+                                        <li><span onClick={this.saveYoursClicked} style={style.myMenuLi}>저장한 너의 글</span></li>
+                                        <li><span style={style.myMenuLi}>고객센터</span></li>
+                                        <li><span onClick={this.props.logOut} style={style.myMenuLi}>로그아웃</span></li>
                                     </ul>
                                 </div>
                             </div>

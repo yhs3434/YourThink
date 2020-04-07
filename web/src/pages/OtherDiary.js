@@ -12,6 +12,10 @@ class OtherDiary extends Component {
         modified: null
     }
 
+    componentDidMount() {
+        this.getDiary();
+    }
+
     getDiary = () => {
         const ws = new WebSocket(process.env.REACT_APP_SERVER_SOCKET_URL);
         const message = {
@@ -85,6 +89,9 @@ class OtherDiary extends Component {
         const style = {
             diaryPage: {
                 minHeight: String(window.innerHeight-142)+"px"
+            },
+            btn: {
+                marginBottom: '5px',
             }
         }
         return(
@@ -94,8 +101,8 @@ class OtherDiary extends Component {
                     <pre className="diary-memoContent">{this.state.memoContent}</pre>
                     <pre className="diary-published">{this.state.published}</pre>
                 </div>
-                <button onClick={this.getDiary}>가져오기</button>
-                <button onClick={this.saveButtonClicked}>저장</button>
+                <button onClick={this.getDiary} style={style.btn}>다음 글</button>
+                <button onClick={this.saveButtonClicked} style={style.btn}>저장</button>
             </div>
         )
     }

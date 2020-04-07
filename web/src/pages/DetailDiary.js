@@ -153,6 +153,16 @@ class DetailDiary extends Component {
             },
             diaryPage: {
                 minHeight: String(window.innerHeight-142)+"px"
+            },
+            btn: {
+                marginLeft: '5px',
+                marginRight: '5px'
+            },
+            btnPublic: {
+                marginLeft: '5px',
+                marginRight: '5px',
+                marginBottom: '5px',
+                width: '212px'
             }
         }
 
@@ -165,10 +175,14 @@ class DetailDiary extends Component {
                         <pre className="diary-published">{this.props.published}</pre>
                     </div>
                     <div>
-                        <button onClick={this.publicButtonClicked}>공개</button>
-                        <button onClick={this.saveButtonClicked}>저장</button>
-                        <button onClick={this.modifyButtonClicked}>수정</button>
-                        <button onClick={this.deleteButtonClicked}>삭제</button>
+                        <div>
+                            <button onClick={this.publicButtonClicked} style={style.btnPublic}>다른 사람에게 공개</button>
+                        </div>
+                        <div>
+                            <button onClick={this.saveButtonClicked} style={style.btn}>저장</button>
+                            <button onClick={this.modifyButtonClicked} style={style.btn}>수정</button>
+                            <button onClick={this.deleteButtonClicked} style={style.btn}>삭제</button>
+                        </div>
                     </div>
                     
                 </div>
