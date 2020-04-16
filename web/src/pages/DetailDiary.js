@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 import Oauth from '../components/oauth.js';
+import {encodeToWs, decodeFromWs} from '../lib/websocket';
 
 class DetailDiary extends Component {
     state = {
@@ -90,6 +91,7 @@ class DetailDiary extends Component {
                             ws.close();
                             break;
                     }
+                    window.alert('[저장한 나의 글]에 저장되었습니다.');
                     
                 }
                 ws.onclose = (event) => {
@@ -117,12 +119,20 @@ class DetailDiary extends Component {
             };
             const ws = new WebSocket(process.env.REACT_APP_SERVER_SOCKET_URL);
             ws.onopen = (event) => {
-                ws.send(escape(JSON.stringify(message)));
+                ws.send(encodeToWs(message));
+            };
+            ws.onmessage = (event) => {
+                const data = decodeFromWs(event.data);
+                if (data === 'success') {
+                    window.alert("[너의 생각]에 30일간 공개되었습니다.");
+                } else if (data === 'error') {
+                    window.alert("공개 오류");
+                }
                 ws.close();
-            }
+            };
             ws.onerror = (event) => {
                 ws.close();
-            }
+            };
         }
     }
 
@@ -181,20 +191,10 @@ class DetailDiary extends Component {
                         <div>
                             <button onClick={this.saveButtonClicked} style={style.btn}>저장</button>
                             <button onClick={this.modifyButtonClicked} style={style.btn}>수정</button>
-                            <button onClick={this.deleteButtonClicked} style={style.btn}>삭제</button>
+                            <button className="btn-del" onClick={this.deleteButtonClicked} style={style.btn}>삭제</button>
                         </div>
                     </div>
                     
-                </div>
-                <div className={this.state.modalOauth
-                    ?"modal_component_visible"
-                    :"modal_component_hide"
-                }>
-                    <Oauth 
-                        modalOpen={this.modalOpen}
-                        modalClose={this.modalClose}
-                        setKakaoId={this.props.setKakaoId}
-                    />
                 </div>
             </Fragment>
         )

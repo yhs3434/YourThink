@@ -37,8 +37,6 @@ class OtherDiary extends Component {
                     this.setState({
                         memoTitle, memoContent, published, modified
                     });
-                    console.log('published', published);
-                    console.log('modified', modified);
                 }
             }
             ws.onerror = (event) => {
@@ -75,9 +73,16 @@ class OtherDiary extends Component {
         ws.onopen = (event) => {
             ws.send(encodeToWs(message));
             ws.onmessage = (event) => {
-                if (event.data === 'close') {
-                    ws.close();
+                const data = decodeFromWs(event.data);
+                console.log(data);
+                if (data === 'close') {
+                    window.alert('[저장한 너의 글]에 저장되었습니다.');
+                } else if (data === 'duplicate') {
+                    window.alert('이미 저장되어있습니다.');
+                } else if (data === 'error') {
+                    window.alert('저장 오류');
                 }
+                ws.close();
             }
             ws.onerror = (event) => {
                 ws.close();

@@ -111,6 +111,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  color: rgb(134, 134, 134);
+}
+
 .button-common {
   padding: 0.5rem;
   border-radius: 0px;
@@ -227,4 +231,12 @@ button {
 
 button:hover{
   background: #8035e9;
+}
+
+button.btn-del {
+  background: rgb(238, 69, 69);
+}
+
+button.btn-del:hover {
+  background: rgb(236, 99, 99);
 }

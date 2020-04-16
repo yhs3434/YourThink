@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import './Header.css';
 import { ReactComponent as NotificationIcon } from './icons/notification.svg';
+import { ReactComponent as AccountIcon } from './icons/account_box-24px.svg';
 import {Link, withRouter} from 'react-router-dom';
 
 class Header extends Component {
@@ -52,11 +53,11 @@ class Header extends Component {
         this.myMenuClickedClose();
     }
 
+    modalBackgroundClicked = (event) => {
+        this.myMenuClickedClose();
+    }
+
     render () {
-        if (Boolean(document.getElementById('mymenu'))) {
-            let mymenu = document.getElementById('mymenu');
-            mymenu.addEventListener('click', this.stopEvent);
-        }
         const style = {
             my: {
                 cursor: 'pointer'
@@ -67,7 +68,8 @@ class Header extends Component {
                 right: '0rem',
                 width: '250px',
                 backgroundColor: 'white',
-                boxShadow: '2px 2px 7px #b3b3b3'
+                boxShadow: '2px 2px 7px #b3b3b3',
+                zIndex: '100'
             },
             myMenuLi: {
                 cursor: 'pointer',
@@ -81,16 +83,21 @@ class Header extends Component {
             },
             headerRightRight: {
                 display: 'flex',
+            },
+            modalBackground: {
+                position: 'fixed',
+                width: '100%',
+                height: '100%',
+                left: 0,
+                top: 0,
+                zIndex: '10'
             }
         }
         return(
             <div className="headerWrap">
                 <nav className="headerLeft">
-                    {
-                        //<Link to="/">홈</Link>
-                    }
-                    <Link to="/my">나의 다이어리</Link>
-                    <Link to="/other">너의 다이어리</Link>
+                    <Link to="/my" style={{marginRight: '10px'}}>나의 생각</Link>
+                    <Link to="/other">너의 생각</Link>
                 </nav>
                 <div className="headerMid"></div>
                 <div className="headerRight">
@@ -98,9 +105,10 @@ class Header extends Component {
                         this.props.logged
                         ?
                         <div style={style.headerRightRight}> 
-                            <NotificationIcon height='20px' width='20px' />
                             <div style={{position: 'relative'}}>
-                                <div onClick={this.myMenuClicked} style={style.my}>사진</div>
+                                <div onClick={this.myMenuClicked} style={style.my}><AccountIcon height='40px' width='40px'/></div>
+                                
+                                <div style={this.state.myMenuClick?style.modalBackground:{display: 'none'}} onClick={this.modalBackgroundClicked}/>
                                 <div style={this.state.myMenuClick?style.myMenu:style.myMenuHidden} id='mymenu'>
                                     <ul style={style.myMenuUl}>
                                         <li><span onClick={this.saveMineClicked} style={style.myMenuLi}>저장한 나의 글</span></li>

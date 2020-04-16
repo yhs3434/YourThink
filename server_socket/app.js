@@ -61,10 +61,10 @@ wss.on('connection', function connection(ws, req) {
             `
             conn.query(query, [memoTitle, memoContent, published, modified], (err, rows, fields) => {
                 if (!err) {
-                    ws.send('success');
+                    ws.send(wsLib.encodeToJs('success'));
                 } else {
                     console.error(err);
-                    ws.send('fail');
+                    ws.send(wsLib.encodeToJs('error'));
                 }
             })
         } else if (type === 'publicGet') {
@@ -80,7 +80,7 @@ wss.on('connection', function connection(ws, req) {
                 }
 
                 const retRow = rows[Math.floor(Math.random() * rows.length)];
-                ws.send(escape(JSON.stringify(retRow)));
+                ws.send(wsLib.encodeToJs(retRow));
                 ws.send('close');
             });
         } else if (type === 'getMine') {
@@ -115,7 +115,6 @@ wss.on('connection', function connection(ws, req) {
                 ws.send(wsLib.encodeToJs('close'));
             });
         } else if (type === 'saveYours') {
-            console.log(type);
             const {memoId, memoTitle, memoContent, published} = payload;
             const query = `
                 INSERT INTO public_save 
@@ -126,7 +125,12 @@ wss.on('connection', function connection(ws, req) {
                 if (!err) {
                     ws.send(wsLib.encodeToJs('close'));
                 } else {
-                    console.log('err', err);
+                    console.log('err', err.errno);
+                    if (err.errno === 1062) {
+                        ws.send(wsLib.encodeToJs('duplicate'));
+                    } else {
+                        ws.send(wsLib.encodeToJs('error'));
+                    }
                 }
             })
         }
