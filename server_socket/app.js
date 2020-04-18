@@ -50,7 +50,7 @@ wss.on('connection', function connection(ws, req) {
                 if (!err) {
                     ws.send('success');
                 } else {
-                    console.error(err);
+                    console.error('err', err);
                     ws.send('fail');
                 }
             })
@@ -63,7 +63,7 @@ wss.on('connection', function connection(ws, req) {
                 if (!err) {
                     ws.send(wsLib.encodeToJs('success'));
                 } else {
-                    console.error(err);
+                    console.error('error', err);
                     ws.send(wsLib.encodeToJs('error'));
                 }
             })
@@ -86,7 +86,7 @@ wss.on('connection', function connection(ws, req) {
         } else if (type === 'getMine') {
             const {userId, platform} = payload;
             const token = `${platform}${userId}`;
-            console.log('token', token);
+
             const query = `
                 SELECT memoTitle, memoContent, published, saved
                 FROM memo 
@@ -125,7 +125,7 @@ wss.on('connection', function connection(ws, req) {
                 if (!err) {
                     ws.send(wsLib.encodeToJs('close'));
                 } else {
-                    console.log('err', err.errno);
+                    console.error('err', err);
                     if (err.errno === 1062) {
                         ws.send(wsLib.encodeToJs('duplicate'));
                     } else {
