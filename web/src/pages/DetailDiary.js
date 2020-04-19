@@ -3,12 +3,54 @@ import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
 import Oauth from '../components/oauth.js';
 import {encodeToWs, decodeFromWs} from '../lib/websocket';
+import {convertDatetime} from '../lib/datetime';
 
 class DetailDiary extends Component {
     state = {
         memoId: undefined,
 
-        modalOauth: false
+        modalOauth: false,
+        publicTime: null
+    }
+
+    componentDidMount() {
+        function dateDiff(_prevDate, _nextDate) {
+            let prevDate = _prevDate instanceof Date ? _prevDate : new Date(_prevDate);
+            let nextDate = _nextDate instanceof Date ? _nextDate : new Date(_nextDate);
+
+            prevDate = new Date(prevDate.getFullYear(), prevDate.getMonth()+1, prevDate.getDate());
+            nextDate = new Date(nextDate.getFullYear(), nextDate.getMonth()+1, nextDate.getDate());
+
+            let dateGap = Math.abs(nextDate.getTime() - prevDate.getTime());
+            dateGap = Math.ceil(dateGap / (1000 * 3600 * 24));
+
+            return dateGap;
+        }
+        const closureFunc = async () => {
+            const memoId = this.props.memoId || false;
+            const db = await openDB();
+            const objectStore = getObjectStore(db, 'readonly');
+            if (memoId) {
+                const getRequest = objectStore.get(memoId);
+                getRequest.onsuccess = (event) => {
+                    const memoData = event.target.result;
+                    const dayGap = dateDiff(memoData.publicTime, new Date());
+                    if (dayGap > 30) {
+                        this.setState({
+                            publicTime: null
+                        });
+                    } else {
+                        this.setState({
+                            publicTime: memoData.publicTime
+                        });
+                    }
+                }
+            }
+
+        }
+        if (Boolean(this.props.memoId)) {
+            closureFunc();
+        }
     }
 
     modalOpen = (event) => {
@@ -109,6 +151,7 @@ class DetailDiary extends Component {
         const objectStore = getObjectStore(db, 'readonly');
         const request = objectStore.get(this.props.memoId);
         request.onsuccess = (event) => {
+            let memoData = request.result;
             const {memoTitle, memoContent, published, modified} = request.result;
             const obj = {
                 memoTitle, memoContent, published, modified
@@ -125,6 +168,15 @@ class DetailDiary extends Component {
                 const data = decodeFromWs(event.data);
                 if (data === 'success') {
                     window.alert("[너의 생각]에 30일간 공개되었습니다.");
+                    memoData.publicTime = convertDatetime('init');
+                    const objectStoreUpdate = getObjectStore(db, 'readwrite');
+                    let requestUpdate = objectStoreUpdate.put(memoData);
+                    requestUpdate.onerror = function(event) {
+                        console.log('퍼블릭 타임 갱신 실패');
+                    }
+                    requestUpdate.onsuccess = function(event) {
+                        console.log('퍼블릭 타임 갱신 완료');
+                    }
                 } else if (data === 'error') {
                     window.alert("공개 오류");
                 }
@@ -173,6 +225,13 @@ class DetailDiary extends Component {
                 marginRight: '5px',
                 marginBottom: '5px',
                 width: '212px'
+            },
+            btnPublicNone: {
+                marginLeft: '5px',
+                marginRight: '5px',
+                marginBottom: '5px',
+                width: '212px',
+                backgroundColor: 'gray'
             }
         }
 
@@ -186,7 +245,9 @@ class DetailDiary extends Component {
                     </div>
                     <div>
                         <div>
-                            <button onClick={this.publicButtonClicked} style={style.btnPublic}>다른 사람에게 공개</button>
+                            <button onClick={this.state.publicTime ? ()=>{} : this.publicButtonClicked} 
+                                style={this.state.publicTime ? style.btnPublicNone : style.btnPublic}
+                            >다른 사람에게 공개</button>
                         </div>
                         <div>
                             <button onClick={this.saveButtonClicked} style={style.btn}>저장</button>
