@@ -3,11 +3,13 @@ import axios from 'axios';
 import './Header.css';
 import { ReactComponent as NotificationIcon } from './icons/notification.svg';
 import { ReactComponent as AccountIcon } from './icons/account_box-24px.svg';
+import { ReactComponent as MenuIcon } from './icons/menu-24px.svg';
 import {Link, withRouter} from 'react-router-dom';
 
 class Header extends Component {
     state = {
-        myMenuClick: false
+        myMenuClick: false,
+        drawerClick: false
     }
 
     componentDidMount() {
@@ -57,6 +59,12 @@ class Header extends Component {
         this.myMenuClickedClose();
     }
 
+    drawerClicked = (event) => {
+        this.setState({
+            drawerClick: !this.state.drawerClick
+        })
+    }
+
     render () {
         const style = {
             my: {
@@ -90,14 +98,44 @@ class Header extends Component {
                 height: '100%',
                 left: 0,
                 top: 0,
-                zIndex: '10'
+                zIndex: '10',
+                backgroundColor: 'rgba(0,0,0, 0.2)'
+            },
+            drawer: {
+                display: 'flex',
+                position: 'fixed',
+                left: '0px',
+                top: '0px',
+                width: '40%',
+                height: '100%',
+                backgroundColor: 'white',
+                flexDirection: 'column',
+                padding: '15px'
+            },
+            drawerBack: {
+                display: 'block',
+                position: 'fixed',
+                left: '0px',
+                top: '0px',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0,0,0, 0.2)'
             }
         }
         return(
             <div className="headerWrap">
                 <nav className="headerLeft">
-                    <Link to="/my" style={{marginRight: '10px'}}>나의 생각</Link>
-                    <Link to="/other">너의 생각</Link>
+                    <Link className="headerDesktop" to="/my" style={{marginRight: '10px'}}>나의 생각</Link>
+                    <Link className="headerDesktop" to="/other">너의 생각</Link>
+                    <div className="headerMobile">
+                        <div style={this.state.drawerClick ? style.drawerBack : {display: 'none'}} onClick={this.drawerClicked}></div>
+                        <div style={this.state.drawerClick ? style.drawer : {display: 'none'}}>
+                            <Link to="/my" onClick={this.drawerClicked}>나의 생각</Link>
+                            <Link to="/other" onClick={this.drawerClicked}>너의 생각</Link>
+                        </div>
+                    </div>
+                    <div className="headerMobile"><MenuIcon style={{cursor: 'pointer'}} onClick={this.drawerClicked}/></div>
+                    
                 </nav>
                 <div className="headerMid"></div>
                 <div className="headerRight">
