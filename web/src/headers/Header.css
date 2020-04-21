@@ -7,6 +7,7 @@
     justify-content: space-between;
     padding-left: 20px;
     padding-right: 20px;
+    font-size: 17px;
 }
 
 .headerLeft {
@@ -27,4 +28,8 @@
     width: 30%;
     justify-content: flex-end;
     align-items: center;
+}
+
+.drawerItem {
+    margin-bottom: 30px;
 }

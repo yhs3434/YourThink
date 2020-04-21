@@ -110,7 +110,10 @@ class Header extends Component {
                 height: '100%',
                 backgroundColor: 'white',
                 flexDirection: 'column',
-                padding: '15px'
+                paddingTop: '50px',
+                paddingBottom: '50px',
+                alignItems: 'center',
+                fontSize: '20px'
             },
             drawerBack: {
                 display: 'block',
@@ -130,8 +133,8 @@ class Header extends Component {
                     <div className="headerMobile">
                         <div style={this.state.drawerClick ? style.drawerBack : {display: 'none'}} onClick={this.drawerClicked}></div>
                         <div style={this.state.drawerClick ? style.drawer : {display: 'none'}}>
-                            <Link to="/my" onClick={this.drawerClicked}>나의 생각</Link>
-                            <Link to="/other" onClick={this.drawerClicked}>너의 생각</Link>
+                            <Link className="drawerItem" to="/my" onClick={this.drawerClicked}>나의 생각</Link>
+                            <Link className="drawerItem" to="/other" onClick={this.drawerClicked}>너의 생각</Link>
                         </div>
                     </div>
                     <div className="headerMobile"><MenuIcon style={{cursor: 'pointer'}} onClick={this.drawerClicked}/></div>
