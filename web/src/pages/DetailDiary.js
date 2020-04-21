@@ -1,7 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {openDB, getObjectStore} from '../lib/indexeddb';
 import {withRouter} from 'react-router-dom';
-import Oauth from '../components/oauth.js';
 import {encodeToWs, decodeFromWs} from '../lib/websocket';
 import {convertDatetime} from '../lib/datetime';
 
@@ -10,46 +9,55 @@ class DetailDiary extends Component {
         memoId: undefined,
 
         modalOauth: false,
-        publicTime: null
+        publicTime: null,
+        refresh: false
     }
 
     componentDidMount() {
+        this.dateGap();
+    }
+
+    componentDidUpdate() {
+        if (this.state.refresh == true) {
+            this.dateGap();
+        }
+    }
+
+    dateGap = async () => {
         function dateDiff(_prevDate, _nextDate) {
             let prevDate = _prevDate instanceof Date ? _prevDate : new Date(_prevDate);
             let nextDate = _nextDate instanceof Date ? _nextDate : new Date(_nextDate);
-
+    
             prevDate = new Date(prevDate.getFullYear(), prevDate.getMonth()+1, prevDate.getDate());
             nextDate = new Date(nextDate.getFullYear(), nextDate.getMonth()+1, nextDate.getDate());
-
+    
             let dateGap = Math.abs(nextDate.getTime() - prevDate.getTime());
             dateGap = Math.ceil(dateGap / (1000 * 3600 * 24));
-
+    
             return dateGap;
-        }
-        const closureFunc = async () => {
-            const memoId = this.props.memoId || false;
-            const db = await openDB();
-            const objectStore = getObjectStore(db, 'readonly');
-            if (memoId) {
-                const getRequest = objectStore.get(memoId);
-                getRequest.onsuccess = (event) => {
-                    const memoData = event.target.result;
-                    const dayGap = dateDiff(memoData.publicTime, new Date());
-                    if (dayGap > 30) {
-                        this.setState({
-                            publicTime: null
-                        });
-                    } else {
-                        this.setState({
-                            publicTime: memoData.publicTime
-                        });
-                    }
+        };
+
+        const memoId = this.props.memoId || false;
+        const db = await openDB();
+        const objectStore = getObjectStore(db, 'readonly');
+
+        if (memoId) {
+            const getRequest = objectStore.get(memoId);
+            getRequest.onsuccess = (event) => {
+                const memoData = event.target.result;
+                const dayGap = dateDiff(memoData.publicTime, new Date());
+                if (dayGap > 30) {
+                    this.setState({
+                        publicTime: null,
+                        refresh: false
+                    });
+                } else {
+                    this.setState({
+                        publicTime: memoData.publicTime,
+                        refresh: false
+                    });
                 }
             }
-
-        }
-        if (Boolean(this.props.memoId)) {
-            closureFunc();
         }
     }
 
@@ -146,7 +154,10 @@ class DetailDiary extends Component {
     }
 
     publicButtonClicked = async (event) => {
-        console.log('공개');
+        if (!Boolean(this.props.memoId)) {
+            return;
+        }
+        const self = this;
         const db = await openDB();
         const objectStore = getObjectStore(db, 'readonly');
         const request = objectStore.get(this.props.memoId);
@@ -181,6 +192,9 @@ class DetailDiary extends Component {
                     window.alert("공개 오류");
                 }
                 ws.close();
+                self.setState({
+                    refresh: true
+                });
             };
             ws.onerror = (event) => {
                 ws.close();

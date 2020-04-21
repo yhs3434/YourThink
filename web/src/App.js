@@ -17,6 +17,7 @@ import Redirect from './pages/redirect/Redirect';
 
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 
+import {openDB, getObjectStore} from './lib/indexeddb';
 import axios from 'axios';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
     }
     window.Kakao.init(process.env.REACT_APP_KAKAO_KEY);
   }, []);
+
 
   useEffect(() => {
     if (Boolean(sessionStorage[`${process.env.REACT_APP_APP_NAME}.logged`])) {
