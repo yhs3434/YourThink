@@ -1,2 +1,4 @@
-web app : ./web/*
-server : ./server_socket/*
+# Folder structure
+
+- web app : ./web/*
+- server : ./server_socket/*
