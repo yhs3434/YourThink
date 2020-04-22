@@ -51,6 +51,14 @@ function App() {
     }
   }, [logged]);
 
+  useEffect(() => {
+    getRefreshState();
+  }, [])
+
+  useEffect(() => {
+    setRefreshState();
+  }, [memoId, memoTitle, memoContent, published])
+
   const setNaverId = (id) => {
     logIn('naver', id);
   }
@@ -73,6 +81,27 @@ function App() {
     sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.platform`);
     sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.userId`);
     sessionStorage.removeItem(`${process.env.REACT_APP_APP_NAME}.logged`);
+  }
+
+  const setRefreshState = () => {
+    if (memoId && memoTitle && memoContent && published) {
+      const obj = {
+        memoId, memoTitle, memoContent, published
+      };
+      window.localStorage['refreshState'] = JSON.stringify(obj);
+    }
+  }
+
+  const getRefreshState = () => {
+    if (!memoId && !memoTitle && !memoContent && !published) {
+      if (Boolean(window.localStorage['refreshState'])){
+        const obj = JSON.parse(window.localStorage['refreshState']);
+        setMemoId(obj.memoId);
+        setMemoTitle(obj.memoTitle);
+        setMemoContent(obj.memoContent);
+        setPublished(obj.published);
+      }
+    }
   }
 
   const sayHello = async () => {

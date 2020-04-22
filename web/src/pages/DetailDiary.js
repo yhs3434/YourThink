@@ -248,7 +248,6 @@ class DetailDiary extends Component {
                 backgroundColor: 'gray'
             }
         }
-
         return (
             <Fragment>
                 <div style={style.wrap} className="diaryPage" style={style.diaryPage}>
