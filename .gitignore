@@ -27,3 +27,5 @@ node_modules/
 
 /server/src/database/config.js
 /server_socket/config/*
+
+backup1/
