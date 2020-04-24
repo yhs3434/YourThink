@@ -109,7 +109,7 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename={process.env.REACT_APP_PUBLIC_URL}>
       <div className="App">
         {
           // <button onClick={sayHello}>send hello</button>
