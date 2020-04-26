@@ -1,3 +1,6 @@
+const https = require('https');
+const fs = require('fs');
+
 const mysql = require('mysql');
 const conn = mysql.createConnection(require('./config/mysqlConfig'));
 conn.connect();
@@ -9,6 +12,18 @@ const mysqlLib = require('./lib/mysql');
 const datetimeToJs = require('./lib/mysql');
 
 const WebSocket = require('ws');
+
+// https 설정
+const httpsOptions = {
+    ca : fs.readFileSync('./security/yourthink.pem'),
+    key : fs.readFileSync('./security/yourthink.key'),
+    cert : fs.readFileSync('./security/yourthink.crt')
+};
+
+const httpsServer = https.createServer(httpsOptions, function (request, response) {
+    response.writeHead(404);
+    response.end();
+});
 
 let wsHash = {}
 
@@ -32,7 +47,8 @@ const wss = new WebSocket.Server({
         concurrencyLimit: 10, // Limits zlib concurrency for perf.
         threshold: 1024 // Size (in bytes) below which messages
         // should not be compressed.
-    }
+    },
+    server: httpsServer
 });
 
 wss.on('connection', function connection(ws, req) {
