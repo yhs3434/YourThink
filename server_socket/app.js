@@ -57,7 +57,7 @@ const wss = new WebSocket.Server({
         threshold: 1024 // Size (in bytes) below which messages
         // should not be compressed.
     },
-    //server: httpsServer
+    server: httpsServer
 });
 
 wss.on('connection', function connection(ws, req) {
