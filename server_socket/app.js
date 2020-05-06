@@ -24,7 +24,7 @@ const httpsOptions = {
 */
 
 const httpsServer = https.createServer({}, function (request, response) {
-    response.writeHead(404);
+    response.write('hello');
     response.end();
 });
 /*
