@@ -14,16 +14,20 @@ const datetimeToJs = require('./lib/mysql');
 const WebSocket = require('ws');
 
 // https 설정
+/*
 const httpsOptions = {
-    ca : fs.readFileSync('./security/yourthink.pem'),
-    key : fs.readFileSync('./security/yourthink.key'),
-    cert : fs.readFileSync('./security/yourthink.crt')
+    ca : fs.readFileSync('./certs/yourthink.pem'),
+    key : fs.readFileSync('./certs/yourthink.key'),
+    cert : fs.readFileSync('./certs/yourthink.crt')
 };
+*/
 
+/*
 const httpsServer = https.createServer(httpsOptions, function (request, response) {
     response.writeHead(404);
     response.end();
 });
+*/
 
 let wsHash = {}
 
@@ -152,3 +156,5 @@ wss.on('connection', function connection(ws, req) {
         }
     })
 })
+
+//httpsServer.listen(8081);
