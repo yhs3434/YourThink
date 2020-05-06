@@ -162,4 +162,4 @@ wss.on('connection', function connection(ws, req) {
     })
 })
 
-//httpsServer.listen(8081);
+httpsServer.listen(8081);
