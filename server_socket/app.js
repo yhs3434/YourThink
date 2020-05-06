@@ -14,6 +14,7 @@ const datetimeToJs = require('./lib/mysql');
 const WebSocket = require('ws');
 
 // https 설정
+
 /*
 const httpsOptions = {
     ca : fs.readFileSync('./certs/yourthink.pem'),
@@ -22,6 +23,10 @@ const httpsOptions = {
 };
 */
 
+const httpsServer = https.createServer({}, function (request, response) {
+    response.writeHead(404);
+    response.end();
+});
 /*
 const httpsServer = https.createServer(httpsOptions, function (request, response) {
     response.writeHead(404);
