@@ -15,29 +15,23 @@ const WebSocket = require('ws');
 
 // https 설정
 
-/*
 const httpsOptions = {
-    ca : fs.readFileSync('./certs/yourthink.pem'),
-    key : fs.readFileSync('./certs/yourthink.key'),
-    cert : fs.readFileSync('./certs/yourthink.crt')
+    ca : fs.readFileSync('./certs/200507/fullchain.pem'),
+    key : fs.readFileSync('./certs/200507/privkey.pem'),
+    cert : fs.readFileSync('./certs/200507/cert.pem')
 };
-*/
 
-const httpsServer = https.createServer({}, function (request, response) {
-    response.write('hello');
-    response.end();
-});
-/*
 const httpsServer = https.createServer(httpsOptions, function (request, response) {
     response.writeHead(404);
     response.end();
 });
-*/
+
+httpsServer.listen(8081);
 
 let wsHash = {}
 
 const wss = new WebSocket.Server({
-    port: 8080,
+    port: 80,
     perMessageDeflate: {
         zlibDeflateOptions: {
             // See zlib defaults.
@@ -161,5 +155,3 @@ wss.on('connection', function connection(ws, req) {
         }
     })
 })
-
-httpsServer.listen(8081);
