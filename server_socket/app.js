@@ -22,16 +22,18 @@ const httpsOptions = {
 };
 
 const httpsServer = https.createServer(httpsOptions, function (request, response) {
-    response.writeHead(404);
+    response.write('<p>hi</p>');
     response.end();
 });
 
-httpsServer.listen(8081);
+httpsServer.listen(8081, () => {
+    console.log("HTTPS server listening on port " + 8081);
+});
 
 let wsHash = {}
 
 const wss = new WebSocket.Server({
-    port: 80,
+    port: 8080,
     perMessageDeflate: {
         zlibDeflateOptions: {
             // See zlib defaults.
