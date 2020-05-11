@@ -26,33 +26,14 @@ const httpsServer = https.createServer(httpsOptions, function (request, response
     response.end();
 });
 
-httpsServer.listen(8081, () => {
-    console.log("HTTPS server listening on port " + 8081);
+httpsServer.listen(8080, () => {
+    console.log("HTTPS server listening on port " + 8080);
 });
 
 let wsHash = {}
 
 const wss = new WebSocket.Server({
-    port: 8080,
-    perMessageDeflate: {
-        zlibDeflateOptions: {
-            // See zlib defaults.
-            chunkSize: 1024,
-            memLevel: 7,
-            level: 3
-        },
-        zlibInflateOptions: {
-            
-        },
-        // Other options settable:
-        clientNoContextTakeover: true, // Defaults to negotiated value.
-        serverNoContextTakeover: true, // Defaults to negotiated value.
-        serverMaxWindowBits: 10, // Defaults to negotiated value.
-        // Below options specified as default values.
-        concurrencyLimit: 10, // Limits zlib concurrency for perf.
-        threshold: 1024 // Size (in bytes) below which messages
-        // should not be compressed.
-    },
+    //port: 8080,
     server: httpsServer
 });
 
