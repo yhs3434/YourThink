@@ -231,20 +231,20 @@ class DetailDiary extends Component {
                 minHeight: String(window.innerHeight-142)+"px"
             },
             btn: {
-                marginLeft: '5px',
-                marginRight: '5px'
+                marginLeft: '10px',
+                marginRight: '10px'
             },
             btnPublic: {
-                marginLeft: '5px',
-                marginRight: '5px',
-                marginBottom: '5px',
-                width: '212px'
+                marginLeft: '10px',
+                marginRight: '10px',
+                marginBottom: '20px',
+                width: '232px'
             },
             btnPublicNone: {
-                marginLeft: '5px',
-                marginRight: '5px',
-                marginBottom: '5px',
-                width: '212px',
+                marginLeft: '10px',
+                marginRight: '10px',
+                marginBottom: '20px',
+                width: '232px',
                 backgroundColor: 'gray'
             }
         }

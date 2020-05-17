@@ -96,7 +96,8 @@ class OtherDiary extends Component {
                 minHeight: String(window.innerHeight-142)+"px"
             },
             btn: {
-                marginBottom: '5px',
+                marginBottom: '10px',
+                marginTop: '10px'
             }
         }
         return(
